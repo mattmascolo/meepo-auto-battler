@@ -57,6 +57,7 @@ export interface Accessory {
   type: 'stat' | 'reactive' | 'buff';
   effect: {
     hp?: number;
+    armor?: number;
     attackMod?: number;
     damageOnHit?: number;
     attackModWhenLow?: number;

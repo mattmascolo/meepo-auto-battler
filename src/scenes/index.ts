@@ -1,3 +1,4 @@
+export { PreloadScene } from './PreloadScene';
 export { MenuScene } from './MenuScene';
 export { LoadoutScene } from './LoadoutScene';
 export { BattleScene } from './BattleScene';

@@ -107,6 +107,32 @@ export class GameStateManager {
     this.state.player.statuses = [];
   }
 
+  healPlayer(amount: number): void {
+    if (!this.state) return;
+    this.state.player.currentHP = Math.min(
+      this.state.player.currentHP + amount,
+      this.state.player.maxHP
+    );
+  }
+
+  boostMaxHP(amount: number): void {
+    if (!this.state) return;
+    this.state.player.maxHP += amount;
+    this.state.player.currentHP += amount; // Also heal by the amount
+  }
+
+  boostAttack(amount: number): void {
+    if (!this.state) return;
+    // Store attack bonus on the animal stats (temporary for this run)
+    this.state.player.animal.stats.attackMod += amount;
+  }
+
+  boostArmor(amount: number): void {
+    if (!this.state) return;
+    // Store armor bonus on the animal stats (temporary for this run)
+    this.state.player.animal.stats.armor += amount;
+  }
+
   resetRun(): void {
     this.state = null;
   }

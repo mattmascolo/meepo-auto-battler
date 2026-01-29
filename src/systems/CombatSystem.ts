@@ -77,7 +77,14 @@ export class CombatSystem {
   }
 
   getEffectiveArmor(combatant: Combatant): number {
-    return combatant.animal.stats.armor;
+    let armor = combatant.animal.stats.armor;
+
+    // Accessory armor bonus (e.g., Dragon's Scale +2)
+    if (combatant.accessory?.effect.armor) {
+      armor += combatant.accessory.effect.armor;
+    }
+
+    return armor;
   }
 
   getDamageReduction(combatant: Combatant): number {
