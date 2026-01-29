@@ -18,12 +18,12 @@ export class PreloadScene extends Phaser.Scene {
       loadingText.setText(`Loading... ${Math.round(value * 100)}%`);
     });
 
-    // Load animal sprites
-    this.load.image('rat', '/sprites/rat.png');
-    this.load.image('toad', '/sprites/toad.png');
-    this.load.image('spider', '/sprites/spider.png');
-    this.load.image('mosquito', '/sprites/mosquito.png');
-    this.load.image('beetle', '/sprites/beetle.png');
+    // Load animal sprites (relative paths for GitHub Pages compatibility)
+    this.load.image('rat', 'sprites/rat.png');
+    this.load.image('toad', 'sprites/toad.png');
+    this.load.image('spider', 'sprites/spider.png');
+    this.load.image('mosquito', 'sprites/mosquito.png');
+    this.load.image('beetle', 'sprites/beetle.png');
   }
 
   create(): void {
