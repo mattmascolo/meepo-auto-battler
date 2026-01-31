@@ -380,41 +380,6 @@ export class BattleScene extends Phaser.Scene {
     return combatant.animal.name;
   }
 
-  private getWeaponEmoji(weaponId: string | undefined): string {
-    if (!weaponId) return '👊';
-    const emojiMap: Record<string, string> = {
-      'rusty-dagger': '🗡️',
-      'flame-stick': '🔥',
-      'venom-fang': '🐍',
-      'heavy-rock': '🪨',
-      'sapping-thorn': '🌿',
-      'thunderclaw': '⚡',
-      'vampiric_fang': '🦇',
-      'blazing_brand': '🔥',
-      'frozen_blade': '❄️',
-      'assassins_needle': '🎯',
-    };
-    return emojiMap[weaponId] || '⚔️';
-  }
-
-  private getAccessoryEmoji(accessoryId: string | undefined): string {
-    if (!accessoryId) return '';
-    const emojiMap: Record<string, string> = {
-      'lucky-pebble': '🍀',
-      'thick-hide': '🛡️',
-      'spiked-collar': '📍',
-      'ember-charm': '🔥',
-      'adrenaline-gland': '💉',
-      'giants_heart': '💜',
-      'berserker_totem': '😤',
-      'mirror_shield': '🪞',
-      'phoenix_charm': '🔆',
-      'dragons_scale': '🐉',
-      'inferno_ring': '💍',
-    };
-    return emojiMap[accessoryId] || '💎';
-  }
-
   private createStatsPanel(combatant: Combatant, x: number, y: number, headerColor: string, headerText: string): void {
     const attackMod = this.combatSystem.getEffectiveAttackMod(combatant, null);
     const armor = this.combatSystem.getEffectiveArmor(combatant);
@@ -433,51 +398,72 @@ export class BattleScene extends Phaser.Scene {
       color: '#ffffff',
     }).setOrigin(0.5);
 
-    // Weapon line
-    const weaponEmoji = this.getWeaponEmoji(combatant.weapon?.id);
-    const weaponName = combatant.weapon?.name || 'Unarmed';
-    let weaponDesc = `${weaponEmoji} ${weaponName}`;
-    if (combatant.weapon?.effectType) {
-      weaponDesc += ` (${combatant.weapon.effectChance}% ${combatant.weapon.effectType})`;
+    // Character's unique attack
+    const unarmedAttack = combatant.animal.unarmedAttack;
+    let attackDesc = `👊 ${unarmedAttack.name} (${unarmedAttack.damage} dmg)`;
+    if (unarmedAttack.effectType && unarmedAttack.effectChance) {
+      attackDesc += ` ${unarmedAttack.effectChance}% ${unarmedAttack.effectType}`;
     }
-    if (combatant.weapon?.healOnHit) {
-      weaponDesc += ` (+${combatant.weapon.healOnHit} heal)`;
-    }
-    this.add.text(x, y + 44, weaponDesc, {
+    this.add.text(x, y + 44, attackDesc, {
       fontSize: '11px',
-      color: '#ff9966',
+      color: '#ffcc66',
     }).setOrigin(0.5);
 
-    // Accessory line
-    if (combatant.accessory) {
-      const accEmoji = this.getAccessoryEmoji(combatant.accessory.id);
-      let accDesc = `${accEmoji} ${combatant.accessory.name}`;
-      const effect = combatant.accessory.effect;
-      const parts: string[] = [];
-      if (effect.hp) parts.push(`+${effect.hp} HP`);
-      if (effect.armor) parts.push(`+${effect.armor} Armor`);
-      if (effect.attackMod) parts.push(`+${effect.attackMod} Atk`);
-      if (effect.damageOnHit) parts.push(`${effect.damageOnHit} reflect`);
-      if (effect.burnChance) parts.push(`${effect.burnChance}% burn`);
-      if (effect.attackModWhenLow) parts.push(`+${effect.attackModWhenLow} Atk <${effect.lowHpThreshold}%`);
-      if (parts.length > 0) {
-        accDesc += ` (${parts.join(', ')})`;
-      }
-      this.add.text(x, y + 64, accDesc, {
-        fontSize: '11px',
-        color: '#66ff99',
-      }).setOrigin(0.5);
-    } else {
-      this.add.text(x, y + 64, 'No accessory', {
-        fontSize: '11px',
-        color: '#666666',
-      }).setOrigin(0.5);
-    }
+    // Equipment slots section
+    const slotY = y + 72;
+    const slotWidth = 100;
+    const slotHeight = 24;
+    const slotSpacing = 28;
+
+    // Weapon slot
+    this.createEquipmentSlot(
+      x, slotY,
+      slotWidth, slotHeight,
+      '🗡️',
+      combatant.weapon ? combatant.weapon.name : null,
+      combatant.weapon ? '#ff9966' : '#444466'
+    );
+
+    // Accessory slot
+    this.createEquipmentSlot(
+      x, slotY + slotSpacing,
+      slotWidth, slotHeight,
+      '💎',
+      combatant.accessory ? combatant.accessory.name : null,
+      combatant.accessory ? '#66ff99' : '#444466'
+    );
 
     // Passive ability
-    this.add.text(x, y + 90, `Passive: ${combatant.animal.passive.name}`, {
+    this.add.text(x, y + 135, `Passive: ${combatant.animal.passive.name}`, {
       fontSize: '10px',
       color: '#888888',
+    }).setOrigin(0.5);
+  }
+
+  private createEquipmentSlot(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    icon: string,
+    itemName: string | null,
+    textColor: string
+  ): void {
+    // Slot background
+    this.add.rectangle(x, y, width, height, itemName ? 0x2a2a4a : 0x1a1a2a)
+      .setStrokeStyle(1, itemName ? 0x5a5a7a : 0x333344);
+
+    // Icon on the left
+    this.add.text(x - width / 2 + 14, y, icon, {
+      fontSize: '12px',
+    }).setOrigin(0.5);
+
+    // Item name or "Empty" indicator
+    const displayText = itemName || 'Empty';
+    this.add.text(x + 8, y, displayText, {
+      fontSize: '10px',
+      color: textColor,
+      fontStyle: itemName ? 'bold' : 'normal',
     }).setOrigin(0.5);
   }
 

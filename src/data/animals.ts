@@ -288,7 +288,8 @@ export const ANIMALS: Animal[] = [
 ];
 
 // Enemy-only animals (not selectable by player)
-const ENEMY_ONLY_IDS = new Set(['wilber', 'geezer', 'sarah', 'humphrey', 'oswald', 'quatack', 'thomas', 'wyatt', 'blackjack', 'finn', 'murder', 'pooty']);
+// Playable: pang, moo-man, oswald, finn, wyatt, quatack
+const ENEMY_ONLY_IDS = new Set(['beep-boop', 'stranger', 'wilber', 'geezer', 'sarah', 'humphrey', 'thomas', 'blackjack', 'murder', 'pooty']);
 
 // Playable animals for character selection
 export const PLAYABLE_ANIMALS: Animal[] = ANIMALS.filter(a => !ENEMY_ONLY_IDS.has(a.id));

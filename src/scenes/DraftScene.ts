@@ -29,6 +29,23 @@ export class DraftScene extends Phaser.Scene {
   private statCards: Phaser.GameObjects.Container[] = [];
   private gearCards: Phaser.GameObjects.Container[] = [];
 
+  // Live preview references
+  private previewHpText: Phaser.GameObjects.Text | null = null;
+  private previewAtkText: Phaser.GameObjects.Text | null = null;
+  private previewArmorText: Phaser.GameObjects.Text | null = null;
+  private weaponSlotBg: Phaser.GameObjects.Rectangle | null = null;
+  private weaponSlotText: Phaser.GameObjects.Text | null = null;
+  private accessorySlotBg: Phaser.GameObjects.Rectangle | null = null;
+  private accessorySlotText: Phaser.GameObjects.Text | null = null;
+
+  // Base values for preview calculations
+  private baseCurrentHP: number = 0;
+  private baseMaxHP: number = 0;
+  private baseAttackMod: number = 0;
+  private baseArmor: number = 0;
+  private baseWeapon: Weapon | null = null;
+  private baseAccessory: Accessory | null = null;
+
   constructor() {
     super({ key: 'DraftScene' });
   }
@@ -47,6 +64,14 @@ export class DraftScene extends Phaser.Scene {
     this.selectedGear = null;
     this.statCards = [];
     this.gearCards = [];
+
+    // Store base values for preview
+    this.baseCurrentHP = state.player.currentHP;
+    this.baseMaxHP = state.player.maxHP;
+    this.baseAttackMod = state.player.animal.stats.attackMod;
+    this.baseArmor = state.player.animal.stats.armor;
+    this.baseWeapon = state.player.weapon;
+    this.baseAccessory = state.player.accessory;
 
     // Generate choices
     this.statChoices = this.generateStatChoices(state.player.currentHP, state.player.maxHP);
@@ -121,20 +146,21 @@ export class DraftScene extends Phaser.Scene {
   }
 
   private createFighterPreview(x: number, y: number, state: any): void {
-    const panelWidth = 160;
+    const panelWidth = 170;
     const panelHeight = 420;
     const container = this.add.container(x + panelWidth / 2, y);
 
     // Panel background
     const bg = this.add.rectangle(0, panelHeight / 2, panelWidth, panelHeight, 0x1a1a2a)
       .setStrokeStyle(2, 0x5a5a7a);
+    container.add(bg);
 
     // Title
     const title = this.add.text(0, 15, 'Your Fighter', {
       fontSize: '14px',
-      color: '#ffffff',
-      fontStyle: 'bold',
+      color: '#888888',
     }).setOrigin(0.5);
+    container.add(title);
 
     // Animal sprite - handle animated vs static
     const animalId = state.player.animal.id;
@@ -144,56 +170,261 @@ export class DraftScene extends Phaser.Scene {
       const config = SPRITE_CONFIGS[animalId];
       const firstFramePath = config.animations.idle?.frames[0] || config.animations.jump?.frames[0];
       const frameKey = `${animalId}-${firstFramePath?.replace(/[\/\.]/g, '-')}`;
-      sprite = this.add.sprite(0, 80, frameKey).setDisplaySize(90, 90);
+      sprite = this.add.sprite(0, 70, frameKey).setDisplaySize(80, 80);
       if (config.animations.idle) {
         (sprite as Phaser.GameObjects.Sprite).play(config.animations.idle.key);
       }
     } else {
-      sprite = this.add.image(0, 80, animalId).setDisplaySize(90, 90);
+      sprite = this.add.image(0, 70, animalId).setDisplaySize(80, 80);
     }
+    container.add(sprite);
 
     // Animal name
-    const name = this.add.text(0, 140, state.player.animal.name, {
-      fontSize: '14px',
+    const name = this.add.text(0, 120, state.player.animal.name, {
+      fontSize: '16px',
       color: '#ffffff',
       fontStyle: 'bold',
     }).setOrigin(0.5);
+    container.add(name);
 
-    // Stats
-    const statsText = `❤️ ${state.player.currentHP}/${state.player.maxHP}\n⚔️ +${state.player.animal.stats.attackMod}\n🛡️ ${state.player.animal.stats.armor}`;
-    const stats = this.add.text(0, 180, statsText, {
-      fontSize: '12px',
-      color: '#aaaaaa',
-      align: 'center',
-    }).setOrigin(0.5, 0);
+    // Stats row - store references for live updates
+    let yPos = 145;
+    const statsContainer = this.add.container(0, yPos);
 
-    // Current weapon
-    const weaponEmoji = state.player.weapon ? this.getWeaponEmoji(state.player.weapon.id) : '👊';
-    const weaponName = state.player.weapon?.name || 'Unarmed';
-    const weaponText = this.add.text(0, 250, `${weaponEmoji} ${weaponName}`, {
+    this.previewHpText = this.add.text(-50, 0, `❤️ ${state.player.currentHP}/${state.player.maxHP}`, {
       fontSize: '11px',
-      color: '#ff9966',
+      color: '#ff6666',
     }).setOrigin(0.5);
 
-    // Current accessory
-    let accText: Phaser.GameObjects.Text | null = null;
-    if (state.player.accessory) {
-      const accEmoji = this.getAccessoryEmoji(state.player.accessory.id);
-      accText = this.add.text(0, 275, `${accEmoji} ${state.player.accessory.name}`, {
-        fontSize: '11px',
-        color: '#66ff99',
-      }).setOrigin(0.5);
+    this.previewAtkText = this.add.text(25, 0, `⚔️ +${state.player.animal.stats.attackMod}`, {
+      fontSize: '11px',
+      color: '#ffaa66',
+    }).setOrigin(0.5);
+
+    this.previewArmorText = this.add.text(70, 0, `🛡️ ${state.player.animal.stats.armor}`, {
+      fontSize: '11px',
+      color: '#6699ff',
+    }).setOrigin(0.5);
+
+    statsContainer.add([this.previewHpText, this.previewAtkText, this.previewArmorText]);
+    container.add(statsContainer);
+    yPos += 25;
+
+    // Divider
+    const divider1 = this.add.rectangle(0, yPos, panelWidth - 20, 1, 0x4a4a6a);
+    container.add(divider1);
+    yPos += 12;
+
+    // Attack section
+    const attackLabel = this.add.text(0, yPos, 'ATTACK', {
+      fontSize: '9px',
+      color: '#ffcc66',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+    container.add(attackLabel);
+    yPos += 14;
+
+    const unarmedAttack = state.player.animal.unarmedAttack;
+    const attackName = this.add.text(0, yPos, `👊 ${unarmedAttack.name}`, {
+      fontSize: '11px',
+      color: '#ffffff',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+    container.add(attackName);
+    yPos += 14;
+
+    let attackDetails = `${unarmedAttack.damage} damage`;
+    if (unarmedAttack.effectType && unarmedAttack.effectChance) {
+      attackDetails += ` • ${unarmedAttack.effectChance}% ${unarmedAttack.effectType}`;
+    }
+    const attackDesc = this.add.text(0, yPos, attackDetails, {
+      fontSize: '9px',
+      color: '#aaaaaa',
+    }).setOrigin(0.5);
+    container.add(attackDesc);
+    yPos += 20;
+
+    // Divider
+    const divider2 = this.add.rectangle(0, yPos, panelWidth - 20, 1, 0x4a4a6a);
+    container.add(divider2);
+    yPos += 12;
+
+    // Equipment section
+    const equipLabel = this.add.text(0, yPos, 'EQUIPMENT', {
+      fontSize: '9px',
+      color: '#8888aa',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+    container.add(equipLabel);
+    yPos += 16;
+
+    // Weapon slot - store references for live updates
+    const weaponSlotElements = this.createEquipmentSlotWithRefs(
+      container, 0, yPos, panelWidth - 20, 22, '🗡️',
+      state.player.weapon?.name || null,
+      state.player.weapon ? '#ff9966' : '#444466'
+    );
+    this.weaponSlotBg = weaponSlotElements.bg;
+    this.weaponSlotText = weaponSlotElements.text;
+    yPos += 26;
+
+    // Accessory slot - store references for live updates
+    const accessorySlotElements = this.createEquipmentSlotWithRefs(
+      container, 0, yPos, panelWidth - 20, 22, '💎',
+      state.player.accessory?.name || null,
+      state.player.accessory ? '#66ff99' : '#444466'
+    );
+    this.accessorySlotBg = accessorySlotElements.bg;
+    this.accessorySlotText = accessorySlotElements.text;
+    yPos += 30;
+
+    // Divider
+    const divider3 = this.add.rectangle(0, yPos, panelWidth - 20, 1, 0x4a4a6a);
+    container.add(divider3);
+    yPos += 12;
+
+    // Passive section
+    const passiveLabel = this.add.text(0, yPos, 'PASSIVE', {
+      fontSize: '9px',
+      color: '#88ff88',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+    container.add(passiveLabel);
+    yPos += 14;
+
+    const passiveName = this.add.text(0, yPos, state.player.animal.passive.name, {
+      fontSize: '11px',
+      color: '#ffffff',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+    container.add(passiveName);
+    yPos += 14;
+
+    const passiveDesc = this.add.text(0, yPos, state.player.animal.passive.description, {
+      fontSize: '9px',
+      color: '#aaaaaa',
+      align: 'center',
+      wordWrap: { width: panelWidth - 20 },
+    }).setOrigin(0.5, 0);
+    container.add(passiveDesc);
+  }
+
+  private createEquipmentSlotWithRefs(
+    container: Phaser.GameObjects.Container,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    icon: string,
+    itemName: string | null,
+    textColor: string
+  ): { bg: Phaser.GameObjects.Rectangle; text: Phaser.GameObjects.Text } {
+    // Slot background
+    const slotBg = this.add.rectangle(x, y, width, height, itemName ? 0x2a2a4a : 0x1a1a2a)
+      .setStrokeStyle(1, itemName ? 0x5a5a7a : 0x333344);
+    container.add(slotBg);
+
+    // Icon on the left
+    const iconText = this.add.text(x - width / 2 + 14, y, icon, {
+      fontSize: '11px',
+    }).setOrigin(0.5);
+    container.add(iconText);
+
+    // Item name or "Empty" indicator
+    const displayText = itemName || 'Empty';
+    const label = this.add.text(x + 8, y, displayText, {
+      fontSize: '10px',
+      color: textColor,
+      fontStyle: itemName ? 'bold' : 'normal',
+    }).setOrigin(0.5);
+    container.add(label);
+
+    return { bg: slotBg, text: label };
+  }
+
+  private updatePreview(): void {
+    // Calculate previewed stats based on selections
+    let previewCurrentHP = this.baseCurrentHP;
+    let previewMaxHP = this.baseMaxHP;
+    let previewAttack = this.baseAttackMod;
+    let previewArmor = this.baseArmor;
+
+    // Apply stat bonus preview
+    if (this.selectedStat) {
+      switch (this.selectedStat.type) {
+        case 'heal':
+          previewCurrentHP = Math.min(previewCurrentHP + this.selectedStat.value, previewMaxHP);
+          break;
+        case 'maxHp':
+          previewMaxHP += this.selectedStat.value;
+          previewCurrentHP += this.selectedStat.value; // Max HP boost also heals
+          break;
+        case 'attack':
+          previewAttack += this.selectedStat.value;
+          break;
+        case 'armor':
+          previewArmor += this.selectedStat.value;
+          break;
+      }
     }
 
-    // Passive
-    const passive = this.add.text(0, 310, `Passive:\n${state.player.animal.passive.name}`, {
-      fontSize: '10px',
-      color: '#888888',
-      align: 'center',
-    }).setOrigin(0.5, 0);
+    // Update stat texts with highlight for changes
+    if (this.previewHpText) {
+      const hpChanged = previewCurrentHP !== this.baseCurrentHP || previewMaxHP !== this.baseMaxHP;
+      this.previewHpText.setText(`❤️ ${previewCurrentHP}/${previewMaxHP}`);
+      this.previewHpText.setColor(hpChanged ? '#88ff88' : '#ff6666');
+    }
 
-    container.add([bg, title, sprite, name, stats, weaponText, passive]);
-    if (accText) container.add(accText);
+    if (this.previewAtkText) {
+      const atkChanged = previewAttack !== this.baseAttackMod;
+      this.previewAtkText.setText(`⚔️ +${previewAttack}`);
+      this.previewAtkText.setColor(atkChanged ? '#ffff88' : '#ffaa66');
+    }
+
+    if (this.previewArmorText) {
+      const armorChanged = previewArmor !== this.baseArmor;
+      this.previewArmorText.setText(`🛡️ ${previewArmor}`);
+      this.previewArmorText.setColor(armorChanged ? '#88ffff' : '#6699ff');
+    }
+
+    // Update equipment slots based on gear selection
+    let previewWeapon = this.baseWeapon;
+    let previewAccessory = this.baseAccessory;
+
+    if (this.selectedGear) {
+      if (this.selectedGear.type === 'weapon') {
+        previewWeapon = this.selectedGear.item as Weapon;
+      } else if (this.selectedGear.type === 'accessory') {
+        previewAccessory = this.selectedGear.item as Accessory;
+      }
+      // 'keep' means no change
+    }
+
+    // Update weapon slot
+    if (this.weaponSlotBg && this.weaponSlotText) {
+      const weaponName = previewWeapon?.name || null;
+      const weaponChanged = previewWeapon !== this.baseWeapon;
+
+      this.weaponSlotBg.setFillStyle(weaponName ? 0x2a2a4a : 0x1a1a2a);
+      this.weaponSlotBg.setStrokeStyle(1, weaponChanged ? 0xffaa66 : (weaponName ? 0x5a5a7a : 0x333344));
+
+      this.weaponSlotText.setText(weaponName || 'Empty');
+      this.weaponSlotText.setColor(weaponChanged ? '#ffff88' : (weaponName ? '#ff9966' : '#444466'));
+      this.weaponSlotText.setFontStyle(weaponName ? 'bold' : 'normal');
+    }
+
+    // Update accessory slot
+    if (this.accessorySlotBg && this.accessorySlotText) {
+      const accessoryName = previewAccessory?.name || null;
+      const accessoryChanged = previewAccessory !== this.baseAccessory;
+
+      this.accessorySlotBg.setFillStyle(accessoryName ? 0x2a2a4a : 0x1a1a2a);
+      this.accessorySlotBg.setStrokeStyle(1, accessoryChanged ? 0x88ff88 : (accessoryName ? 0x5a5a7a : 0x333344));
+
+      this.accessorySlotText.setText(accessoryName || 'Empty');
+      this.accessorySlotText.setColor(accessoryChanged ? '#88ffff' : (accessoryName ? '#66ff99' : '#444466'));
+      this.accessorySlotText.setFontStyle(accessoryName ? 'bold' : 'normal');
+    }
   }
 
   private getWeaponEmoji(weaponId: string): string {
@@ -553,6 +784,7 @@ export class DraftScene extends Phaser.Scene {
     bg.setFillStyle(0x4a4a6a);
     bg.setStrokeStyle(4, choice.color);
 
+    this.updatePreview();
     this.updateContinueButton();
   }
 
@@ -583,6 +815,7 @@ export class DraftScene extends Phaser.Scene {
     }
     bg.setStrokeStyle(4, selectedColor);
 
+    this.updatePreview();
     this.updateContinueButton();
   }
 

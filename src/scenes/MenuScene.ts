@@ -15,12 +15,6 @@ export class MenuScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    // Subtitle
-    this.add.text(width / 2, height / 3 + 60, 'Auto Battler', {
-      fontSize: '24px',
-      color: '#aaaaaa',
-    }).setOrigin(0.5);
-
     // Start button
     const startButton = this.add.text(width / 2, height / 2 + 50, 'Start Game', {
       fontSize: '32px',
@@ -64,11 +58,5 @@ export class MenuScene extends Phaser.Scene {
     galleryButton.on('pointerdown', () => {
       this.scene.start('CharacterGalleryScene');
     });
-
-    // Instructions
-    this.add.text(width / 2, height - 80, 'Build your animal. Fight 3 CPUs. Win the gauntlet.', {
-      fontSize: '16px',
-      color: '#888888',
-    }).setOrigin(0.5);
   }
 }
