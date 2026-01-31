@@ -87,6 +87,25 @@ export const ANIMALS: Animal[] = [
     },
   },
   {
+    id: 'wilber',
+    name: 'Wilber',
+    stats: { hp: 22, attackMod: 3, armor: 11 },
+    unarmedAttack: {
+      name: 'Tusk Gore',
+      damage: 5,
+      effectChance: 25,
+      effectType: 'poison',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Berserker Rage',
+      description: '+2 Atk Mod when below 50% HP',
+      type: 'stat_conditional',
+      trigger: { hpBelow: 50 },
+      effect: { attackMod: 2 },
+    },
+  },
+  {
     id: 'geezer',
     name: 'Geezer',
     stats: { hp: 32, attackMod: 4, armor: 13 },

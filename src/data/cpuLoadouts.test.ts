@@ -27,9 +27,9 @@ describe('CPU loadouts data', () => {
     expect(cpu2?.accessory).toBeNull();
   });
 
-  it('CPU 3 (hard) should be Humphrey with no items', () => {
+  it('CPU 3 (hard) should be Wilber with no items', () => {
     const cpu3 = getCPULoadout(3);
-    expect(cpu3?.animal.id).toBe('humphrey');
+    expect(cpu3?.animal.id).toBe('wilber');
     expect(cpu3?.weapon).toBeNull();
     expect(cpu3?.accessory).toBeNull();
   });

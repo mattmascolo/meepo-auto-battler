@@ -9,7 +9,7 @@ interface CPULoadoutDef {
 const CPU_LOADOUT_DEFS: CPULoadoutDef[] = [
   { difficulty: 1, animalId: 'sarah' },
   { difficulty: 2, animalId: 'humphrey' },
-  { difficulty: 3, animalId: 'humphrey' },
+  { difficulty: 3, animalId: 'wilber' },
   { difficulty: 4, animalId: 'geezer' },
 ];
 

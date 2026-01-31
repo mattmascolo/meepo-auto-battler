@@ -2,17 +2,18 @@ import { describe, it, expect } from 'vitest';
 import { ANIMALS, getAnimalById } from './animals';
 
 describe('animals data', () => {
-  it('should have exactly 6 animals', () => {
-    expect(ANIMALS.length).toBe(6);
+  it('should have exactly 7 animals', () => {
+    expect(ANIMALS.length).toBe(7);
   });
 
-  it('should include all playable animals', () => {
+  it('should include all animals', () => {
     const ids = ANIMALS.map(a => a.id);
     expect(ids).toContain('pang');
     expect(ids).toContain('humphrey');
     expect(ids).toContain('beep-boop');
     expect(ids).toContain('moo-man');
     expect(ids).toContain('sarah');
+    expect(ids).toContain('wilber');
     expect(ids).toContain('geezer');
   });
 
