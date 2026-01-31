@@ -93,8 +93,8 @@ export interface GameState {
 
 export interface CPULoadout {
   animal: Animal;
-  weapon: Weapon;
-  accessory: Accessory;
+  weapon: Weapon | null;
+  accessory: Accessory | null;
 }
 
 export interface DraftChoice {

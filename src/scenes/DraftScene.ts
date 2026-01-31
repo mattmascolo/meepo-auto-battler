@@ -15,8 +15,8 @@ interface StatChoice {
 }
 
 interface GearChoice {
-  type: 'weapon' | 'accessory';
-  item: Weapon | Accessory;
+  type: 'weapon' | 'accessory' | 'keep';
+  item: Weapon | Accessory | null;
   isRare: boolean;
 }
 
@@ -299,7 +299,7 @@ export class DraftScene extends Phaser.Scene {
     const available = allGear.filter(item => !excludeIds.has(item.id));
     const shuffled = available.sort(() => Math.random() - 0.5);
 
-    return shuffled.slice(0, 3).map(item => {
+    const choices: GearChoice[] = shuffled.slice(0, 2).map(item => {
       const isRare = DRAFT_WEAPONS.some(w => w.id === item.id) ||
                      DRAFT_ACCESSORIES.some(a => a.id === item.id);
       return {
@@ -308,6 +308,15 @@ export class DraftScene extends Phaser.Scene {
         isRare,
       };
     });
+
+    // Add "Keep Current" option
+    choices.push({
+      type: 'keep',
+      item: null,
+      isRare: false,
+    });
+
+    return choices;
   }
 
   private createStatCards(startX: number, startY: number): void {
@@ -375,6 +384,58 @@ export class DraftScene extends Phaser.Scene {
 
       const container = this.add.container(x, y);
 
+      // Handle "Keep Current" card differently
+      if (choice.type === 'keep') {
+        const bg = this.add.rectangle(0, 0, cardWidth, cardHeight, 0x2a2a4a)
+          .setStrokeStyle(2, 0x8888aa);
+
+        const typeLabel = this.add.text(0, -70, 'KEEP CURRENT', {
+          fontSize: '10px',
+          color: '#8888aa',
+        }).setOrigin(0.5);
+
+        const emojiText = this.add.text(0, -30, '✓', {
+          fontSize: '36px',
+        }).setOrigin(0.5);
+
+        const nameLabel = this.add.text(0, 10, 'No Change', {
+          fontSize: '14px',
+          color: '#ffffff',
+          fontStyle: 'bold',
+        }).setOrigin(0.5);
+
+        const descLabel = this.add.text(0, 55, 'Continue with\nyour current gear', {
+          fontSize: '10px',
+          color: '#aaaaaa',
+          wordWrap: { width: cardWidth - 20 },
+          align: 'center',
+        }).setOrigin(0.5);
+
+        container.add([bg, typeLabel, emojiText, nameLabel, descLabel]);
+
+        bg.setInteractive({ useHandCursor: true });
+
+        bg.on('pointerover', () => {
+          if (this.selectedGear !== choice) {
+            bg.setFillStyle(0x3a3a5a);
+          }
+        });
+
+        bg.on('pointerout', () => {
+          if (this.selectedGear !== choice) {
+            bg.setFillStyle(0x2a2a4a);
+          }
+        });
+
+        bg.on('pointerdown', () => {
+          this.selectGear(choice, index);
+        });
+
+        this.gearCards.push(container);
+        (choice as any)._bg = bg;
+        return;
+      }
+
       const borderColor = choice.isRare ? 0xffaa00 : (choice.type === 'weapon' ? 0xff6666 : 0x66ff66);
       const bg = this.add.rectangle(0, 0, cardWidth, cardHeight, 0x2a2a4a)
         .setStrokeStyle(choice.isRare ? 3 : 2, borderColor);
@@ -398,14 +459,14 @@ export class DraftScene extends Phaser.Scene {
 
       // Emoji
       const emoji = choice.type === 'weapon'
-        ? this.getWeaponEmoji(choice.item.id)
-        : this.getAccessoryEmoji(choice.item.id);
+        ? this.getWeaponEmoji(choice.item!.id)
+        : this.getAccessoryEmoji(choice.item!.id);
       const emojiText = this.add.text(0, -30, emoji, {
         fontSize: '36px',
       }).setOrigin(0.5);
 
       // Name
-      const nameLabel = this.add.text(0, 10, choice.item.name, {
+      const nameLabel = this.add.text(0, 10, choice.item!.name, {
         fontSize: '14px',
         color: '#ffffff',
         fontStyle: 'bold',
@@ -446,6 +507,9 @@ export class DraftScene extends Phaser.Scene {
   }
 
   private getGearDescription(choice: GearChoice): string {
+    if (choice.type === 'keep' || !choice.item) {
+      return 'Continue with\nyour current gear';
+    }
     if (choice.type === 'weapon') {
       const weapon = choice.item as Weapon;
       let desc = `💥 ${weapon.damage} damage`;
@@ -498,7 +562,12 @@ export class DraftScene extends Phaser.Scene {
       const ch = this.gearChoices[i];
       const bg = (ch as any)._bg as Phaser.GameObjects.Rectangle;
       bg.setFillStyle(0x2a2a4a);
-      const borderColor = ch.isRare ? 0xffaa00 : (ch.type === 'weapon' ? 0xff6666 : 0x66ff66);
+      let borderColor: number;
+      if (ch.type === 'keep') {
+        borderColor = 0x8888aa;
+      } else {
+        borderColor = ch.isRare ? 0xffaa00 : (ch.type === 'weapon' ? 0xff6666 : 0x66ff66);
+      }
       bg.setStrokeStyle(ch.isRare ? 3 : 2, borderColor);
     });
 
@@ -506,7 +575,12 @@ export class DraftScene extends Phaser.Scene {
     this.selectedGear = choice;
     const bg = (choice as any)._bg as Phaser.GameObjects.Rectangle;
     bg.setFillStyle(0x4a4a6a);
-    const selectedColor = choice.isRare ? 0xffdd44 : (choice.type === 'weapon' ? 0xff9999 : 0x99ff99);
+    let selectedColor: number;
+    if (choice.type === 'keep') {
+      selectedColor = 0xaaaacc;
+    } else {
+      selectedColor = choice.isRare ? 0xffdd44 : (choice.type === 'weapon' ? 0xff9999 : 0x99ff99);
+    }
     bg.setStrokeStyle(4, selectedColor);
 
     this.updateContinueButton();
@@ -546,7 +620,7 @@ export class DraftScene extends Phaser.Scene {
       }
     }
 
-    if (this.selectedGear) {
+    if (this.selectedGear && this.selectedGear.type !== 'keep') {
       if (this.selectedGear.type === 'weapon') {
         gameStateManager.equipWeapon(this.selectedGear.item as Weapon);
       } else {

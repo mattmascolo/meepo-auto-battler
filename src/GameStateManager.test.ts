@@ -40,15 +40,15 @@ describe('GameStateManager', () => {
   });
 
   describe('getCurrentCPUCombatant', () => {
-    it('should return CPU 1 (Sarah) at start', () => {
+    it('should return CPU 1 (Sarah) at start with no items', () => {
       const humphrey = getAnimalById('humphrey')!;
       manager.createNewRun(humphrey, null, null);
 
       const cpu = manager.getCurrentCPUCombatant();
 
       expect(cpu?.animal.id).toBe('sarah');
-      expect(cpu?.weapon?.id).toBe('rusty-dagger');
-      expect(cpu?.accessory?.id).toBe('iron-acorn');
+      expect(cpu?.weapon).toBeNull();
+      expect(cpu?.accessory).toBeNull();
     });
   });
 

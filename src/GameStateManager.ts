@@ -40,7 +40,7 @@ export class GameStateManager {
     const loadout = getCPULoadout(this.state.run.currentCPU);
     if (!loadout) return null;
 
-    const bonusHP = loadout.accessory.effect.hp ?? 0;
+    const bonusHP = loadout.accessory?.effect.hp ?? 0;
     const maxHP = loadout.animal.stats.hp + bonusHP;
 
     return {
