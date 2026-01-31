@@ -90,20 +90,20 @@ describe('CombatSystem', () => {
 
   describe('getEffectiveArmor', () => {
     it('should return base armor', () => {
-      const beetle = createCombatant('beetle');
-      expect(combatSystem.getEffectiveArmor(beetle)).toBe(14);
+      const sarah = createCombatant('sarah');
+      expect(combatSystem.getEffectiveArmor(sarah)).toBe(14);
     });
   });
 
   describe('getDamageReduction', () => {
     it('should return 0 for no damage reduction passive', () => {
-      const toad = createCombatant('toad');
-      expect(combatSystem.getDamageReduction(toad)).toBe(0);
+      const pang = createCombatant('pang');
+      expect(combatSystem.getDamageReduction(pang)).toBe(0);
     });
 
-    it('should return 1 for beetle hard shell', () => {
-      const beetle = createCombatant('beetle');
-      expect(combatSystem.getDamageReduction(beetle)).toBe(1);
+    it('should return 1 for sarah hard shell', () => {
+      const sarah = createCombatant('sarah');
+      expect(combatSystem.getDamageReduction(sarah)).toBe(1);
     });
 
     it('should return 1 for beep-boop metal plating', () => {
@@ -114,14 +114,14 @@ describe('CombatSystem', () => {
 
   describe('getAttackDamage', () => {
     it('should return weapon damage when equipped', () => {
-      const fighter = createCombatant('toad', 'rusty-dagger');
+      const fighter = createCombatant('humphrey', 'rusty-dagger');
       expect(combatSystem.getAttackDamage(fighter)).toBe(5);
     });
 
     it('should return unarmed attack damage when no weapon', () => {
-      // toad's Tongue Whip does 3 damage
-      const toad = createCombatant('toad');
-      expect(combatSystem.getAttackDamage(toad)).toBe(3);
+      // humphrey's Tail Slap does 3 damage
+      const humphrey = createCombatant('humphrey');
+      expect(combatSystem.getAttackDamage(humphrey)).toBe(3);
     });
   });
 
@@ -130,22 +130,22 @@ describe('CombatSystem', () => {
       vi.spyOn(diceRoller, 'rollD20').mockReturnValue(15);
       vi.spyOn(diceRoller, 'checkProc').mockReturnValue(false);
 
-      const attacker = createCombatant('toad', 'rusty-dagger'); // 5 damage
-      const defender = createCombatant('beetle'); // armor 14, DR 1
+      const attacker = createCombatant('humphrey', 'rusty-dagger'); // 5 damage
+      const defender = createCombatant('sarah'); // armor 14, DR 1
 
       const event = combatSystem.executeAttack(attacker, defender);
 
       expect(event.type).toBe('attack');
       expect(event.hit).toBe(true);
-      expect(event.damage).toBe(4); // 5 - 1 (beetle damage reduction)
+      expect(event.damage).toBe(4); // 5 - 1 (sarah damage reduction)
       expect(defender.currentHP).toBe(20); // 24 - 4
     });
 
     it('should return miss event when roll fails', () => {
       vi.spyOn(diceRoller, 'rollD20').mockReturnValue(5);
 
-      const attacker = createCombatant('toad');
-      const defender = createCombatant('beetle');
+      const attacker = createCombatant('humphrey');
+      const defender = createCombatant('sarah');
 
       const event = combatSystem.executeAttack(attacker, defender);
 
@@ -158,8 +158,8 @@ describe('CombatSystem', () => {
       vi.spyOn(diceRoller, 'rollD20').mockReturnValue(20);
       vi.spyOn(diceRoller, 'checkProc').mockReturnValue(true);
 
-      const attacker = createCombatant('toad', 'flame-stick');
-      const defender = createCombatant('toad');
+      const attacker = createCombatant('humphrey', 'flame-stick');
+      const defender = createCombatant('humphrey');
 
       combatSystem.executeAttack(attacker, defender);
 
@@ -170,9 +170,9 @@ describe('CombatSystem', () => {
       vi.spyOn(diceRoller, 'rollD20').mockReturnValue(20);
       vi.spyOn(diceRoller, 'checkProc').mockReturnValue(false);
 
-      const attacker = createCombatant('toad', 'sapping-thorn');
+      const attacker = createCombatant('humphrey', 'sapping-thorn');
       attacker.currentHP = 20;
-      const defender = createCombatant('toad');
+      const defender = createCombatant('humphrey');
 
       combatSystem.executeAttack(attacker, defender);
 
@@ -183,8 +183,8 @@ describe('CombatSystem', () => {
       vi.spyOn(diceRoller, 'rollD20').mockReturnValue(20);
       vi.spyOn(diceRoller, 'checkProc').mockReturnValue(false);
 
-      const attacker = createCombatant('toad');
-      const defender = createCombatant('toad', undefined, 'spiked-collar');
+      const attacker = createCombatant('humphrey');
+      const defender = createCombatant('humphrey', undefined, 'spiked-collar');
       const initialHP = attacker.currentHP;
 
       combatSystem.executeAttack(attacker, defender);
@@ -205,26 +205,26 @@ describe('CombatSystem', () => {
       expect(fighter.currentHP).toBe(16); // 18 - 2
     });
 
-    it('should apply toad regen passive', () => {
-      const toad = createCombatant('toad'); // HP 28
-      toad.currentHP = 25;
+    it('should apply humphrey regen passive', () => {
+      const humphrey = createCombatant('humphrey'); // HP 28
+      humphrey.currentHP = 25;
 
-      const event = combatSystem.executeTurnEnd(toad);
+      const event = combatSystem.executeTurnEnd(humphrey);
 
       expect(event.regenHealing).toBe(1);
-      expect(toad.currentHP).toBe(26);
+      expect(humphrey.currentHP).toBe(26);
     });
   });
 
   describe('isCombatantDead', () => {
     it('should return true when HP <= 0', () => {
-      const fighter = createCombatant('toad');
+      const fighter = createCombatant('humphrey');
       fighter.currentHP = 0;
       expect(combatSystem.isCombatantDead(fighter)).toBe(true);
     });
 
     it('should return false when HP > 0', () => {
-      const fighter = createCombatant('toad');
+      const fighter = createCombatant('humphrey');
       expect(combatSystem.isCombatantDead(fighter)).toBe(false);
     });
   });

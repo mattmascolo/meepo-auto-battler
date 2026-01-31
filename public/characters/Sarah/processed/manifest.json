@@ -1,0 +1,58 @@
+{
+  "character": "Sarah",
+  "frameSize": 128,
+  "animations": [
+    {
+      "name": "Attack",
+      "frameCount": 5,
+      "files": [
+        "Attack/Attack_00.png",
+        "Attack/Attack_01.png",
+        "Attack/Attack_02.png",
+        "Attack/Attack_03.png",
+        "Attack/Attack_04.png"
+      ]
+    },
+    {
+      "name": "Death",
+      "frameCount": 5,
+      "files": [
+        "Death/Death_00.png",
+        "Death/Death_01.png",
+        "Death/Death_02.png",
+        "Death/Death_03.png",
+        "Death/Death_04.png"
+      ]
+    },
+    {
+      "name": "Hurt",
+      "frameCount": 5,
+      "files": [
+        "Hurt/Hurt_00.png",
+        "Hurt/Hurt_01.png",
+        "Hurt/Hurt_02.png",
+        "Hurt/Hurt_03.png",
+        "Hurt/Hurt_04.png"
+      ]
+    },
+    {
+      "name": "Idle",
+      "frameCount": 2,
+      "files": [
+        "Idle/Idle_00.png",
+        "Idle/Idle_01.png"
+      ]
+    },
+    {
+      "name": "Jump",
+      "frameCount": 5,
+      "files": [
+        "Jump/Jump_00.png",
+        "Jump/Jump_01.png",
+        "Jump/Jump_02.png",
+        "Jump/Jump_03.png",
+        "Jump/Jump_04.png"
+      ]
+    }
+  ]
+}

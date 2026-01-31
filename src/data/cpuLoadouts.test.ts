@@ -12,23 +12,23 @@ describe('CPU loadouts data', () => {
     expect(getCPULoadout(3)).toBeDefined();
   });
 
-  it('CPU 1 (easy) should be Beetle', () => {
+  it('CPU 1 (easy) should be Sarah', () => {
     const cpu1 = getCPULoadout(1);
-    expect(cpu1?.animal.id).toBe('beetle');
+    expect(cpu1?.animal.id).toBe('sarah');
     expect(cpu1?.weapon.id).toBe('rusty-dagger');
     expect(cpu1?.accessory.id).toBe('iron-acorn');
   });
 
-  it('CPU 2 (medium) should be Toad', () => {
+  it('CPU 2 (medium) should be Humphrey', () => {
     const cpu2 = getCPULoadout(2);
-    expect(cpu2?.animal.id).toBe('toad');
+    expect(cpu2?.animal.id).toBe('humphrey');
     expect(cpu2?.weapon.id).toBe('flame-stick');
     expect(cpu2?.accessory.id).toBe('lucky-pebble');
   });
 
-  it('CPU 3 (hard) should be Toad', () => {
+  it('CPU 3 (hard) should be Humphrey', () => {
     const cpu3 = getCPULoadout(3);
-    expect(cpu3?.animal.id).toBe('toad');
+    expect(cpu3?.animal.id).toBe('humphrey');
     expect(cpu3?.weapon.id).toBe('venom-fang');
     expect(cpu3?.accessory.id).toBe('adrenaline-gland');
   });

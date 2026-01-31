@@ -84,7 +84,7 @@ describe('Systems Integration', () => {
   it('should handle proc chance effects', () => {
     vi.spyOn(diceRoller, 'checkProc').mockReturnValue(true);
 
-    const effects = collectCombatantEffects('toad', 'flame-stick');
+    const effects = collectCombatantEffects('humphrey', 'flame-stick');
     const burnProc = effects.find(e => e.id === 'flame-stick-burn');
     expect(burnProc).toBeDefined();
 

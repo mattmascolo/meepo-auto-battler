@@ -17,10 +17,10 @@ describe('Effect data', () => {
       expect(effect?.modifiers?.attackMod).toBe(-1);
     });
 
-    it('should define Toad Thick Skin as per-turn regen', () => {
-      const effect = getPassiveEffect('toad');
+    it('should define Humphrey Thick Skin as per-turn regen', () => {
+      const effect = getPassiveEffect('humphrey');
       expect(effect).toBeDefined();
-      expect(effect?.id).toBe('toad-thick-skin');
+      expect(effect?.id).toBe('humphrey-thick-skin');
       expect(effect?.type).toBe('heal');
       expect(effect?.trigger).toBe('turn_end');
       expect(effect?.value).toBe(1);
@@ -45,10 +45,10 @@ describe('Effect data', () => {
       expect(effect?.value).toBe(2);
     });
 
-    it('should define Beetle Hard Shell as damage reduction', () => {
-      const effect = getPassiveEffect('beetle');
+    it('should define Sarah Hard Shell as damage reduction', () => {
+      const effect = getPassiveEffect('sarah');
       expect(effect).toBeDefined();
-      expect(effect?.id).toBe('beetle-hard-shell');
+      expect(effect?.id).toBe('sarah-hard-shell');
       expect(effect?.type).toBe('damage_reduction');
       expect(effect?.trigger).toBe('on_attacked');
       expect(effect?.value).toBe(1);

@@ -20,11 +20,11 @@ export const ANIMALS: Animal[] = [
     },
   },
   {
-    id: 'toad',
-    name: 'Toad',
+    id: 'humphrey',
+    name: 'Humphrey',
     stats: { hp: 28, attackMod: 1, armor: 11 },
     unarmedAttack: {
-      name: 'Tongue Whip',
+      name: 'Tail Slap',
       damage: 3,
       effectChance: 30,
       effectType: 'weaken',
@@ -72,11 +72,11 @@ export const ANIMALS: Animal[] = [
     },
   },
   {
-    id: 'beetle',
-    name: 'Beetle',
+    id: 'sarah',
+    name: 'Sarah',
     stats: { hp: 24, attackMod: 0, armor: 14 },
     unarmedAttack: {
-      name: 'Horn Ram',
+      name: 'Shell Bash',
       damage: 5,
     },
     passive: {

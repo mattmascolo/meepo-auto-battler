@@ -13,19 +13,19 @@ interface CPULoadoutDef {
 const CPU_LOADOUT_DEFS: CPULoadoutDef[] = [
   {
     difficulty: 1,
-    animalId: 'beetle',
+    animalId: 'sarah',
     weaponId: 'rusty-dagger',
     accessoryId: 'iron-acorn',
   },
   {
     difficulty: 2,
-    animalId: 'toad',
+    animalId: 'humphrey',
     weaponId: 'flame-stick',
     accessoryId: 'lucky-pebble',
   },
   {
     difficulty: 3,
-    animalId: 'toad',
+    animalId: 'humphrey',
     weaponId: 'venom-fang',
     accessoryId: 'adrenaline-gland',
   },

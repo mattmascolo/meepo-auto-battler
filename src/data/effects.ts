@@ -12,8 +12,8 @@ export const PASSIVE_EFFECTS: Record<string, Effect> = {
     trigger: 'always',
     modifiers: { attackMod: -1 },
   },
-  'toad': {
-    id: 'toad-thick-skin',
+  'humphrey': {
+    id: 'humphrey-thick-skin',
     name: 'Thick Skin',
     type: 'heal',
     target: 'self',
@@ -37,8 +37,8 @@ export const PASSIVE_EFFECTS: Record<string, Effect> = {
     triggerValue: 50,
     value: 2,
   },
-  'beetle': {
-    id: 'beetle-hard-shell',
+  'sarah': {
+    id: 'sarah-hard-shell',
     name: 'Hard Shell',
     type: 'damage_reduction',
     target: 'self',

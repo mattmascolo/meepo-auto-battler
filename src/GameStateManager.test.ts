@@ -13,13 +13,13 @@ describe('GameStateManager', () => {
 
   describe('createNewRun', () => {
     it('should create a new run with player loadout', () => {
-      const rat = getAnimalById('toad')!;
+      const humphrey = getAnimalById('humphrey')!;
       const dagger = getWeaponById('rusty-dagger')!;
       const acorn = getAccessoryById('iron-acorn')!;
 
-      const state = manager.createNewRun(rat, dagger, acorn);
+      const state = manager.createNewRun(humphrey, dagger, acorn);
 
-      expect(state.player.animal.id).toBe('toad');
+      expect(state.player.animal.id).toBe('humphrey');
       expect(state.player.weapon?.id).toBe('rusty-dagger');
       expect(state.player.accessory?.id).toBe('iron-acorn');
       expect(state.player.currentHP).toBe(32); // 28 + 4 from iron acorn
@@ -29,9 +29,9 @@ describe('GameStateManager', () => {
     });
 
     it('should handle null weapon and accessory', () => {
-      const rat = getAnimalById('toad')!;
+      const humphrey = getAnimalById('humphrey')!;
 
-      const state = manager.createNewRun(rat, null, null);
+      const state = manager.createNewRun(humphrey, null, null);
 
       expect(state.player.weapon).toBeNull();
       expect(state.player.accessory).toBeNull();
@@ -40,13 +40,13 @@ describe('GameStateManager', () => {
   });
 
   describe('getCurrentCPUCombatant', () => {
-    it('should return CPU 1 (Beetle) at start', () => {
-      const rat = getAnimalById('toad')!;
-      manager.createNewRun(rat, null, null);
+    it('should return CPU 1 (Sarah) at start', () => {
+      const humphrey = getAnimalById('humphrey')!;
+      manager.createNewRun(humphrey, null, null);
 
       const cpu = manager.getCurrentCPUCombatant();
 
-      expect(cpu?.animal.id).toBe('beetle');
+      expect(cpu?.animal.id).toBe('sarah');
       expect(cpu?.weapon?.id).toBe('rusty-dagger');
       expect(cpu?.accessory?.id).toBe('iron-acorn');
     });
@@ -54,8 +54,8 @@ describe('GameStateManager', () => {
 
   describe('markCPUDefeated and advanceToNextCPU', () => {
     it('should track defeated CPUs and advance', () => {
-      const rat = getAnimalById('toad')!;
-      manager.createNewRun(rat, null, null);
+      const humphrey = getAnimalById('humphrey')!;
+      manager.createNewRun(humphrey, null, null);
 
       expect(manager.getState()?.run.currentCPU).toBe(1);
 
@@ -67,12 +67,12 @@ describe('GameStateManager', () => {
       expect(manager.getState()?.run.currentCPU).toBe(2);
 
       const cpu2 = manager.getCurrentCPUCombatant();
-      expect(cpu2?.animal.id).toBe('toad');
+      expect(cpu2?.animal.id).toBe('humphrey');
     });
 
     it('should not advance past CPU 3', () => {
-      const rat = getAnimalById('toad')!;
-      manager.createNewRun(rat, null, null);
+      const humphrey = getAnimalById('humphrey')!;
+      manager.createNewRun(humphrey, null, null);
 
       manager.markCPUDefeated();
       manager.advanceToNextCPU();
@@ -88,8 +88,8 @@ describe('GameStateManager', () => {
 
   describe('isRunComplete', () => {
     it('should return true when all CPUs defeated', () => {
-      const rat = getAnimalById('toad')!;
-      manager.createNewRun(rat, null, null);
+      const humphrey = getAnimalById('humphrey')!;
+      manager.createNewRun(humphrey, null, null);
 
       expect(manager.isRunComplete()).toBe(false);
 
@@ -105,8 +105,8 @@ describe('GameStateManager', () => {
 
   describe('isRunFailed', () => {
     it('should return true when player HP <= 0', () => {
-      const rat = getAnimalById('toad')!;
-      manager.createNewRun(rat, null, null);
+      const humphrey = getAnimalById('humphrey')!;
+      manager.createNewRun(humphrey, null, null);
 
       expect(manager.isRunFailed()).toBe(false);
 
@@ -117,9 +117,9 @@ describe('GameStateManager', () => {
 
   describe('equipWeapon', () => {
     it('should change equipped weapon', () => {
-      const rat = getAnimalById('toad')!;
+      const humphrey = getAnimalById('humphrey')!;
       const dagger = getWeaponById('rusty-dagger')!;
-      manager.createNewRun(rat, null, null);
+      manager.createNewRun(humphrey, null, null);
 
       manager.equipWeapon(dagger);
 
@@ -129,9 +129,9 @@ describe('GameStateManager', () => {
 
   describe('equipAccessory', () => {
     it('should change equipped accessory and adjust HP', () => {
-      const rat = getAnimalById('toad')!;
+      const humphrey = getAnimalById('humphrey')!;
       const acorn = getAccessoryById('iron-acorn')!;
-      manager.createNewRun(rat, null, null);
+      manager.createNewRun(humphrey, null, null);
 
       expect(manager.getState()?.player.maxHP).toBe(28);
 
@@ -143,10 +143,10 @@ describe('GameStateManager', () => {
     });
 
     it('should handle HP adjustment when swapping from HP accessory', () => {
-      const toad = getAnimalById('toad')!;
+      const humphrey = getAnimalById('humphrey')!;
       const acorn = getAccessoryById('iron-acorn')!;
       const pebble = getAccessoryById('lucky-pebble')!;
-      manager.createNewRun(toad, null, acorn);
+      manager.createNewRun(humphrey, null, acorn);
 
       expect(manager.getState()?.player.currentHP).toBe(32);
 
@@ -163,8 +163,8 @@ describe('GameStateManager', () => {
 
   describe('clearStatuses', () => {
     it('should remove all status effects', () => {
-      const rat = getAnimalById('toad')!;
-      manager.createNewRun(rat, null, null);
+      const humphrey = getAnimalById('humphrey')!;
+      manager.createNewRun(humphrey, null, null);
       manager.getState()!.player.statuses = [
         { type: 'burn', value: 2, duration: 3 },
         { type: 'weaken', value: 2, duration: 2 },

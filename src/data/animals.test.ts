@@ -9,10 +9,10 @@ describe('animals data', () => {
   it('should include all playable animals', () => {
     const ids = ANIMALS.map(a => a.id);
     expect(ids).toContain('pang');
-    expect(ids).toContain('toad');
+    expect(ids).toContain('humphrey');
     expect(ids).toContain('beep-boop');
     expect(ids).toContain('moo-man');
-    expect(ids).toContain('beetle');
+    expect(ids).toContain('sarah');
   });
 
   it('should retrieve pang by id', () => {
