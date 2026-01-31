@@ -86,8 +86,8 @@ export interface Combatant {
 export interface GameState {
   player: Combatant;
   run: {
-    currentCPU: 1 | 2 | 3;
-    cpuDefeated: [boolean, boolean, boolean];
+    currentCPU: 1 | 2 | 3 | 4;
+    cpuDefeated: [boolean, boolean, boolean, boolean];
   };
 }
 

@@ -2,14 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { CPU_LOADOUTS, getCPULoadout } from './cpuLoadouts';
 
 describe('CPU loadouts data', () => {
-  it('should have exactly 3 CPU loadouts', () => {
-    expect(CPU_LOADOUTS.length).toBe(3);
+  it('should have exactly 4 CPU loadouts', () => {
+    expect(CPU_LOADOUTS.length).toBe(4);
   });
 
-  it('should have easy, medium, hard difficulties', () => {
+  it('should have all 4 difficulties', () => {
     expect(getCPULoadout(1)).toBeDefined();
     expect(getCPULoadout(2)).toBeDefined();
     expect(getCPULoadout(3)).toBeDefined();
+    expect(getCPULoadout(4)).toBeDefined();
   });
 
   it('CPU 1 (easy) should be Sarah', () => {
@@ -31,6 +32,13 @@ describe('CPU loadouts data', () => {
     expect(cpu3?.animal.id).toBe('humphrey');
     expect(cpu3?.weapon.id).toBe('venom-fang');
     expect(cpu3?.accessory.id).toBe('adrenaline-gland');
+  });
+
+  it('CPU 4 (final boss) should be Geezer', () => {
+    const cpu4 = getCPULoadout(4);
+    expect(cpu4?.animal.id).toBe('geezer');
+    expect(cpu4?.weapon.id).toBe('sapping-thorn');
+    expect(cpu4?.accessory.id).toBe('spiked-collar');
   });
 
   it('all loadouts should have valid animal, weapon, accessory', () => {

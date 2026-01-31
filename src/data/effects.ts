@@ -45,6 +45,14 @@ export const PASSIVE_EFFECTS: Record<string, Effect> = {
     trigger: 'on_attacked',
     value: 1,
   },
+  'geezer': {
+    id: 'geezer-wisdom-of-ages',
+    name: 'Wisdom of Ages',
+    type: 'heal',
+    target: 'self',
+    trigger: 'turn_end',
+    value: 2,
+  },
 };
 
 /**

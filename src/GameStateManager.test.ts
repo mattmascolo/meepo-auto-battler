@@ -25,7 +25,7 @@ describe('GameStateManager', () => {
       expect(state.player.currentHP).toBe(32); // 28 + 4 from iron acorn
       expect(state.player.maxHP).toBe(32);
       expect(state.run.currentCPU).toBe(1);
-      expect(state.run.cpuDefeated).toEqual([false, false, false]);
+      expect(state.run.cpuDefeated).toEqual([false, false, false, false]);
     });
 
     it('should handle null weapon and accessory', () => {
@@ -70,7 +70,7 @@ describe('GameStateManager', () => {
       expect(cpu2?.animal.id).toBe('humphrey');
     });
 
-    it('should not advance past CPU 3', () => {
+    it('should not advance past CPU 4', () => {
       const humphrey = getAnimalById('humphrey')!;
       manager.createNewRun(humphrey, null, null);
 
@@ -79,10 +79,12 @@ describe('GameStateManager', () => {
       manager.markCPUDefeated();
       manager.advanceToNextCPU();
       manager.markCPUDefeated();
+      manager.advanceToNextCPU();
+      manager.markCPUDefeated();
 
       const advanced = manager.advanceToNextCPU();
       expect(advanced).toBe(false);
-      expect(manager.getState()?.run.currentCPU).toBe(3);
+      expect(manager.getState()?.run.currentCPU).toBe(4);
     });
   });
 
@@ -93,6 +95,8 @@ describe('GameStateManager', () => {
 
       expect(manager.isRunComplete()).toBe(false);
 
+      manager.markCPUDefeated();
+      manager.advanceToNextCPU();
       manager.markCPUDefeated();
       manager.advanceToNextCPU();
       manager.markCPUDefeated();

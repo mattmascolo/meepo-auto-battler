@@ -19,7 +19,7 @@ export class GameStateManager {
       },
       run: {
         currentCPU: 1,
-        cpuDefeated: [false, false, false],
+        cpuDefeated: [false, false, false, false],
       },
     };
 
@@ -63,8 +63,8 @@ export class GameStateManager {
   advanceToNextCPU(): boolean {
     if (!this.state) return false;
 
-    if (this.state.run.currentCPU < 3) {
-      this.state.run.currentCPU = (this.state.run.currentCPU + 1) as 1 | 2 | 3;
+    if (this.state.run.currentCPU < 4) {
+      this.state.run.currentCPU = (this.state.run.currentCPU + 1) as 1 | 2 | 3 | 4;
       return true;
     }
     return false;

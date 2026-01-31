@@ -86,6 +86,24 @@ export const ANIMALS: Animal[] = [
       effect: { damageReduction: 1 },
     },
   },
+  {
+    id: 'geezer',
+    name: 'Geezer',
+    stats: { hp: 32, attackMod: 4, armor: 13 },
+    unarmedAttack: {
+      name: 'Ancient Strike',
+      damage: 6,
+      effectChance: 35,
+      effectType: 'weaken',
+      effectValue: 3,
+    },
+    passive: {
+      name: 'Wisdom of Ages',
+      description: 'Regen 2 HP per turn',
+      type: 'per_turn',
+      effect: { regen: 2 },
+    },
+  },
 ];
 
 export function getAnimalById(id: string): Animal | undefined {

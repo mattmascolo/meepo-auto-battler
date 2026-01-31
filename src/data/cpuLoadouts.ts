@@ -4,7 +4,7 @@ import { getWeaponById } from './weapons';
 import { getAccessoryById } from './accessories';
 
 interface CPULoadoutDef {
-  difficulty: 1 | 2 | 3;
+  difficulty: 1 | 2 | 3 | 4;
   animalId: string;
   weaponId: string;
   accessoryId: string;
@@ -29,6 +29,12 @@ const CPU_LOADOUT_DEFS: CPULoadoutDef[] = [
     weaponId: 'venom-fang',
     accessoryId: 'adrenaline-gland',
   },
+  {
+    difficulty: 4,
+    animalId: 'geezer',
+    weaponId: 'sapping-thorn',
+    accessoryId: 'spiked-collar',
+  },
 ];
 
 export const CPU_LOADOUTS: CPULoadout[] = CPU_LOADOUT_DEFS.map(def => {
@@ -43,6 +49,6 @@ export const CPU_LOADOUTS: CPULoadout[] = CPU_LOADOUT_DEFS.map(def => {
   return { animal, weapon, accessory };
 });
 
-export function getCPULoadout(difficulty: 1 | 2 | 3): CPULoadout | undefined {
+export function getCPULoadout(difficulty: 1 | 2 | 3 | 4): CPULoadout | undefined {
   return CPU_LOADOUTS[difficulty - 1];
 }

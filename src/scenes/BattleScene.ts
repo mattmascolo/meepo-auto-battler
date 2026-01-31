@@ -34,7 +34,7 @@ export class BattleScene extends Phaser.Scene {
 
   private isPlayerTurn: boolean = true;
   private battleEnded: boolean = false;
-  private cpuNumber: 1 | 2 | 3 = 1;
+  private cpuNumber: 1 | 2 | 3 | 4 = 1;
 
   constructor() {
     super({ key: 'BattleScene' });
