@@ -43,6 +43,28 @@ export class MenuScene extends Phaser.Scene {
       this.scene.start('LoadoutScene');
     });
 
+    // Gallery button
+    const galleryButton = this.add.text(width / 2, height / 2 + 120, 'Character Gallery', {
+      fontSize: '24px',
+      color: '#ffffff',
+      backgroundColor: '#4a4a6a',
+      padding: { x: 20, y: 10 },
+    })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    galleryButton.on('pointerover', () => {
+      galleryButton.setStyle({ backgroundColor: '#6a6a8a' });
+    });
+
+    galleryButton.on('pointerout', () => {
+      galleryButton.setStyle({ backgroundColor: '#4a4a6a' });
+    });
+
+    galleryButton.on('pointerdown', () => {
+      this.scene.start('CharacterGalleryScene');
+    });
+
     // Instructions
     this.add.text(width / 2, height - 80, 'Build your animal. Fight 3 CPUs. Win the gauntlet.', {
       fontSize: '16px',

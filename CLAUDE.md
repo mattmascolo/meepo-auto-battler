@@ -51,3 +51,16 @@ Damage: WeaponDamage - DamageReduction = FinalDamage (min 0)
 ```
 MenuScene → LoadoutScene → BattleScene → DraftScene → BattleScene → DraftScene → BattleScene → ResultScene
 ```
+
+## Existing Scripts (DO NOT REINVENT)
+
+**IMPORTANT:** Check `/scripts/` before creating new tooling!
+
+```bash
+# Process new character spritesheets (splits frames + removes background)
+node scripts/process-sprites.mjs public/characters/<CharacterFolder>
+```
+
+After processing, add:
+1. Sprite config to `src/config/spriteConfig.ts`
+2. Animal data to `src/data/animals.ts`

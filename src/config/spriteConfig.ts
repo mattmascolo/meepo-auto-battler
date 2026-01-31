@@ -781,6 +781,258 @@ export const SPRITE_CONFIGS: Record<string, CharacterSpriteConfig> = {
       },
     },
   },
+  'blackjack': {
+    basePath: 'characters/BlackJack/processed',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'blackjack-idle',
+        frames: [
+          'Idle/Idle_00.png',
+          'Idle/Idle_01.png',
+        ],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'blackjack-attack',
+        frames: [
+          'Attack/Attack_00.png',
+          'Attack/Attack_01.png',
+          'Attack/Attack_02.png',
+          'Attack/Attack_03.png',
+          'Attack/Attack_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'blackjack-hurt',
+        frames: [
+          'Hurt/Hurt_00.png',
+          'Hurt/Hurt_01.png',
+          'Hurt/Hurt_02.png',
+          'Hurt/Hurt_03.png',
+          'Hurt/Hurt_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'blackjack-death',
+        frames: [
+          'Death/Death_00.png',
+          'Death/Death_01.png',
+          'Death/Death_02.png',
+          'Death/Death_03.png',
+          'Death/Death_04.png',
+        ],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'blackjack-jump',
+        frames: [
+          'Jump/Jump_00.png',
+          'Jump/Jump_01.png',
+          'Jump/Jump_02.png',
+          'Jump/Jump_03.png',
+          'Jump/Jump_04.png',
+        ],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
+  'finn': {
+    basePath: 'characters/Finn/processed',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'finn-idle',
+        frames: [
+          'Idle/Idle_00.png',
+          'Idle/Idle_01.png',
+        ],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'finn-attack',
+        frames: [
+          'Attack/Attack_00.png',
+          'Attack/Attack_01.png',
+          'Attack/Attack_02.png',
+          'Attack/Attack_03.png',
+          'Attack/Attack_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'finn-hurt',
+        frames: [
+          'Hurt/Hurt_00.png',
+          'Hurt/Hurt_01.png',
+          'Hurt/Hurt_02.png',
+          'Hurt/Hurt_03.png',
+          'Hurt/Hurt_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'finn-death',
+        frames: [
+          'Death/Death_00.png',
+          'Death/Death_01.png',
+          'Death/Death_02.png',
+          'Death/Death_03.png',
+          'Death/Death_04.png',
+        ],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'finn-jump',
+        frames: [
+          'Jump/Jump_00.png',
+          'Jump/Jump_01.png',
+          'Jump/Jump_02.png',
+          'Jump/Jump_03.png',
+          'Jump/Jump_04.png',
+        ],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
+  'murder': {
+    basePath: 'characters/Murder/processed',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'murder-idle',
+        frames: [
+          'Idle/Idle_00.png',
+          'Idle/Idle_01.png',
+        ],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'murder-attack',
+        frames: [
+          'Attack/Attack_00.png',
+          'Attack/Attack_01.png',
+          'Attack/Attack_02.png',
+          'Attack/Attack_03.png',
+          'Attack/Attack_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'murder-hurt',
+        frames: [
+          'Hurt/Hurt_00.png',
+          'Hurt/Hurt_01.png',
+          'Hurt/Hurt_02.png',
+          'Hurt/Hurt_03.png',
+          'Hurt/Hurt_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'murder-death',
+        frames: [
+          'Death/Death_00.png',
+          'Death/Death_01.png',
+          'Death/Death_02.png',
+          'Death/Death_03.png',
+          'Death/Death_04.png',
+        ],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'murder-jump',
+        frames: [
+          'Jump/Jump_00.png',
+          'Jump/Jump_01.png',
+          'Jump/Jump_02.png',
+          'Jump/Jump_03.png',
+          'Jump/Jump_04.png',
+        ],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
+  'pooty': {
+    basePath: 'characters/Pooty/processed',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'pooty-idle',
+        frames: [
+          'Idle/Idle_00.png',
+          'Idle/Idle_01.png',
+        ],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'pooty-attack',
+        frames: [
+          'Attack/Attack_00.png',
+          'Attack/Attack_01.png',
+          'Attack/Attack_02.png',
+          'Attack/Attack_03.png',
+          'Attack/Attack_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'pooty-hurt',
+        frames: [
+          'Hurt/Hurt_00.png',
+          'Hurt/Hurt_01.png',
+          'Hurt/Hurt_02.png',
+          'Hurt/Hurt_03.png',
+          'Hurt/Hurt_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'pooty-death',
+        frames: [
+          'Death/Death_00.png',
+          'Death/Death_01.png',
+          'Death/Death_02.png',
+          'Death/Death_03.png',
+          'Death/Death_04.png',
+        ],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'pooty-jump',
+        frames: [
+          'Jump/Jump_00.png',
+          'Jump/Jump_01.png',
+          'Jump/Jump_02.png',
+          'Jump/Jump_03.png',
+          'Jump/Jump_04.png',
+        ],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
 };
 
 /**

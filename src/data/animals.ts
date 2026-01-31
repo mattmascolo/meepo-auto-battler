@@ -141,10 +141,154 @@ export const ANIMALS: Animal[] = [
       effect: { dodgeChance: 15 },
     },
   },
+  {
+    id: 'oswald',
+    name: 'Oswald',
+    stats: { hp: 18, attackMod: 5, armor: 8 },
+    unarmedAttack: {
+      name: 'Talon Swipe',
+      damage: 4,
+      effectChance: 25,
+      effectType: 'weaken',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Keen Eye',
+      description: '+2 Armor',
+      type: 'stat_flat',
+      effect: { armor: 2 },
+    },
+  },
+  {
+    id: 'quatack',
+    name: 'Quatack',
+    stats: { hp: 22, attackMod: 1, armor: 12 },
+    unarmedAttack: {
+      name: 'Wing Slap',
+      damage: 3,
+      effectChance: 30,
+      effectType: 'weaken',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Feathered Armor',
+      description: 'Take -1 damage from all hits',
+      type: 'on_attacked',
+      effect: { damageReduction: 1 },
+    },
+  },
+  {
+    id: 'thomas',
+    name: 'Thomas',
+    stats: { hp: 20, attackMod: 3, armor: 10 },
+    unarmedAttack: {
+      name: 'Pounce',
+      damage: 4,
+    },
+    passive: {
+      name: 'Nine Lives',
+      description: 'Regen 1 HP per turn',
+      type: 'per_turn',
+      effect: { regen: 1 },
+    },
+  },
+  {
+    id: 'wyatt',
+    name: 'Wyatt',
+    stats: { hp: 19, attackMod: 4, armor: 9 },
+    unarmedAttack: {
+      name: 'Fang Bite',
+      damage: 5,
+      effectChance: 25,
+      effectType: 'poison',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Pack Tactics',
+      description: '+2 Atk Mod when below 50% HP',
+      type: 'stat_conditional',
+      trigger: { hpBelow: 50 },
+      effect: { attackMod: 2 },
+    },
+  },
+  {
+    id: 'blackjack',
+    name: 'Blackjack',
+    stats: { hp: 21, attackMod: 4, armor: 10 },
+    unarmedAttack: {
+      name: 'Card Slash',
+      damage: 4,
+      effectChance: 21,
+      effectType: 'burn',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Lucky Draw',
+      description: '+2 Atk Mod when below 50% HP',
+      type: 'stat_conditional',
+      trigger: { hpBelow: 50 },
+      effect: { attackMod: 2 },
+    },
+  },
+  {
+    id: 'finn',
+    name: 'Finn',
+    stats: { hp: 20, attackMod: 3, armor: 11 },
+    unarmedAttack: {
+      name: 'Fin Slap',
+      damage: 4,
+      effectChance: 25,
+      effectType: 'weaken',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Slippery',
+      description: '10% chance to dodge attacks',
+      type: 'on_attacked',
+      effect: { dodgeChance: 10 },
+    },
+  },
+  {
+    id: 'murder',
+    name: 'Murder',
+    stats: { hp: 17, attackMod: 5, armor: 8 },
+    unarmedAttack: {
+      name: 'Assassinate',
+      damage: 6,
+      effectChance: 30,
+      effectType: 'poison',
+      effectValue: 3,
+    },
+    passive: {
+      name: 'Bloodthirst',
+      description: 'Regen 2 HP when below 50% HP',
+      type: 'stat_conditional',
+      trigger: { hpBelow: 50 },
+      effect: { regen: 2 },
+    },
+  },
+  {
+    id: 'pooty',
+    name: 'Pooty',
+    stats: { hp: 24, attackMod: 2, armor: 12 },
+    unarmedAttack: {
+      name: 'Stink Bomb',
+      damage: 3,
+      effectChance: 40,
+      effectType: 'weaken',
+      effectValue: 3,
+    },
+    passive: {
+      name: 'Toxic Aura',
+      description: 'Enemies have -1 Atk Mod',
+      type: 'stat_flat',
+      effect: { enemyAttackMod: -1 },
+    },
+  },
 ];
 
 // Enemy-only animals (not selectable by player)
-const ENEMY_ONLY_IDS = new Set(['wilber', 'geezer', 'sarah', 'humphrey']);
+const ENEMY_ONLY_IDS = new Set(['wilber', 'geezer', 'sarah', 'humphrey', 'oswald', 'quatack', 'thomas', 'wyatt', 'blackjack', 'finn', 'murder', 'pooty']);
 
 // Playable animals for character selection
 export const PLAYABLE_ANIMALS: Animal[] = ANIMALS.filter(a => !ENEMY_ONLY_IDS.has(a.id));

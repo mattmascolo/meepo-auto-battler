@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { ANIMALS, getAnimalById } from './animals';
 
 describe('animals data', () => {
-  it('should have exactly 8 animals', () => {
-    expect(ANIMALS.length).toBe(8);
+  it('should have exactly 16 animals', () => {
+    expect(ANIMALS.length).toBe(16);
   });
 
   it('should include all animals', () => {
@@ -16,6 +16,14 @@ describe('animals data', () => {
     expect(ids).toContain('wilber');
     expect(ids).toContain('geezer');
     expect(ids).toContain('stranger');
+    expect(ids).toContain('oswald');
+    expect(ids).toContain('quatack');
+    expect(ids).toContain('thomas');
+    expect(ids).toContain('wyatt');
+    expect(ids).toContain('blackjack');
+    expect(ids).toContain('finn');
+    expect(ids).toContain('murder');
+    expect(ids).toContain('pooty');
   });
 
   it('should retrieve pang by id', () => {

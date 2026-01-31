@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { PreloadScene, MenuScene, LoadoutScene, BattleScene, DraftScene, ResultScene } from './scenes';
+import { PreloadScene, MenuScene, LoadoutScene, BattleScene, DraftScene, ResultScene, CharacterGalleryScene } from './scenes';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -7,7 +7,7 @@ const config: Phaser.Types.Core.GameConfig = {
   height: 600,
   parent: 'game-container',
   backgroundColor: '#1a1a2e',
-  scene: [PreloadScene, MenuScene, LoadoutScene, BattleScene, DraftScene, ResultScene],
+  scene: [PreloadScene, MenuScene, LoadoutScene, BattleScene, DraftScene, ResultScene, CharacterGalleryScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
