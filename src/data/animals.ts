@@ -123,6 +123,24 @@ export const ANIMALS: Animal[] = [
       effect: { regen: 2 },
     },
   },
+  {
+    id: 'stranger',
+    name: 'Stranger',
+    stats: { hp: 20, attackMod: 2, armor: 10 },
+    unarmedAttack: {
+      name: 'Shadow Strike',
+      damage: 4,
+      effectChance: 20,
+      effectType: 'poison',
+      effectValue: 3,
+    },
+    passive: {
+      name: 'Evasive',
+      description: '15% chance to dodge attacks',
+      type: 'on_attacked',
+      effect: { dodgeChance: 15 },
+    },
+  },
 ];
 
 // Enemy-only animals (not selectable by player)

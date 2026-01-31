@@ -718,6 +718,42 @@ export const SPRITE_CONFIGS: Record<string, CharacterSpriteConfig> = {
       },
     },
   },
+  'stranger': {
+    basePath: 'characters/Stranger',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'stranger-idle',
+        frames: ['Idle/stranger-idle.png'],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'stranger-attack',
+        frames: ['Attack/stranger-attack.png'],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'stranger-hurt',
+        frames: ['Hurt/stranger-hurt.png'],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'stranger-death',
+        frames: ['Death/stranger-death.png'],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'stranger-jump',
+        frames: ['Jump/stranger-jump.png'],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
 };
 
 /**
