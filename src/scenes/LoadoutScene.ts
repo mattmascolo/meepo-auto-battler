@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import type { Animal, Weapon, Accessory } from '../types';
-import { ANIMALS, WEAPONS, ACCESSORIES } from '../data';
+import { PLAYABLE_ANIMALS, WEAPONS, ACCESSORIES } from '../data';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
 
@@ -132,7 +132,7 @@ export class LoadoutScene extends Phaser.Scene {
     const cardHeight = 120;
     const spacing = 8;
 
-    ANIMALS.forEach((animal, index) => {
+    PLAYABLE_ANIMALS.forEach((animal, index) => {
       const x = startX + (index * (cardWidth + spacing)) + cardWidth / 2;
       const y = startY + cardHeight / 2;
 

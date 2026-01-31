@@ -125,6 +125,12 @@ export const ANIMALS: Animal[] = [
   },
 ];
 
+// Enemy-only animals (not selectable by player)
+const ENEMY_ONLY_IDS = new Set(['wilber', 'geezer', 'sarah', 'humphrey']);
+
+// Playable animals for character selection
+export const PLAYABLE_ANIMALS: Animal[] = ANIMALS.filter(a => !ENEMY_ONLY_IDS.has(a.id));
+
 export function getAnimalById(id: string): Animal | undefined {
   return ANIMALS.find(a => a.id === id);
 }
