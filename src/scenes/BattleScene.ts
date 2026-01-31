@@ -26,7 +26,9 @@ export class BattleScene extends Phaser.Scene {
   private cpuStatusText: Phaser.GameObjects.Text | null = null;
 
   private logText: Phaser.GameObjects.Text | null = null;
+  private logToggleBtn: Phaser.GameObjects.Text | null = null;
   private battleLog: string[] = [];
+  private logVisible: boolean = true;
 
   // Dice display
   private diceText: Phaser.GameObjects.Text | null = null;
@@ -55,6 +57,7 @@ export class BattleScene extends Phaser.Scene {
     // Reset battle state
     this.battleLog = [];
     this.battleEnded = false;
+    this.logVisible = true;
     this.cpuNumber = state.run.currentCPU;
 
     // Get combatants
@@ -129,11 +132,20 @@ export class BattleScene extends Phaser.Scene {
     // Dice display in center
     this.createDiceDisplay(width / 2, 140);
 
-    // Battle log
+    // Battle log with toggle
     this.add.text(width / 2, 350, 'Battle Log', {
       fontSize: '16px',
       color: '#aaaaaa',
     }).setOrigin(0.5);
+
+    this.logToggleBtn = this.add.text(width / 2 + 60, 350, '[hide]', {
+      fontSize: '12px',
+      color: '#666666',
+    }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
+
+    this.logToggleBtn.on('pointerdown', () => this.toggleBattleLog());
+    this.logToggleBtn.on('pointerover', () => this.logToggleBtn?.setColor('#888888'));
+    this.logToggleBtn.on('pointerout', () => this.logToggleBtn?.setColor('#666666'));
 
     this.logText = this.add.text(width / 2, 370, '', {
       fontSize: '13px',
@@ -434,6 +446,12 @@ export class BattleScene extends Phaser.Scene {
       this.battleLog.pop();
     }
     this.logText?.setText(this.battleLog.join('\n'));
+  }
+
+  private toggleBattleLog(): void {
+    this.logVisible = !this.logVisible;
+    this.logText?.setVisible(this.logVisible);
+    this.logToggleBtn?.setText(this.logVisible ? '[hide]' : '[show]');
   }
 
   private updateDisplay(): void {
