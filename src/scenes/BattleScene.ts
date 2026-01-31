@@ -9,6 +9,14 @@ const DICE_ROLL_DURATION = 800; // ms for dice animation
 const SHAKE_DURATION = 100; // ms for shake animation
 const SHAKE_INTENSITY = 5; // pixels
 
+// Layout constants
+const BATTLE_AREA_HEIGHT = 360; // Upper 3/5ths
+const INFO_PANEL_Y = 360; // Where info panel starts
+const SPRITE_SIZE = 140; // Larger character sprites
+const PLAYER_X = 180;
+const CPU_X = 620;
+const SPRITE_Y = 200;
+
 export class BattleScene extends Phaser.Scene {
   private player: Combatant | null = null;
   private cpu: Combatant | null = null;
@@ -46,7 +54,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   create(): void {
-    const { width } = this.cameras.main;
+    const { width, height } = this.cameras.main;
     const state = gameStateManager.getState();
 
     if (!state) {
@@ -69,77 +77,106 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    // ========== UPPER BATTLE AREA (top 360px) ==========
+
+    // Background image - scaled to fill battle area
+    const bg = this.add.image(width / 2, BATTLE_AREA_HEIGHT / 2, 'battle-bg-1');
+    const bgScale = Math.max(width / bg.width, BATTLE_AREA_HEIGHT / bg.height);
+    bg.setScale(bgScale);
+
     // Battle header
-    this.add.text(width / 2, 20, `Battle ${this.cpuNumber} of 3`, {
-      fontSize: '24px',
+    this.add.text(width / 2, 25, `Battle ${this.cpuNumber} of 4`, {
+      fontSize: '22px',
       color: '#ffffff',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 3,
     }).setOrigin(0.5);
 
-    // Player side (left) - sprite and info
-    this.add.text(150, 50, 'YOUR ANIMAL', {
-      fontSize: '14px',
-      color: '#88ff88',
-    }).setOrigin(0.5);
-
-    // Player sprite
+    // Player sprite (left side)
     const playerAnimalId = this.player.animal.id;
-    this.playerSprite = this.createCombatantSprite(playerAnimalId, 150, 140, false);
+    this.playerSprite = this.createCombatantSprite(playerAnimalId, PLAYER_X, SPRITE_Y, false);
 
-    this.add.text(150, 200, this.getDisplayName(this.player), {
+    // Player name under sprite
+    this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 15, this.getDisplayName(this.player), {
       fontSize: '16px',
       color: '#ffffff',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 2,
     }).setOrigin(0.5);
 
-    this.playerHPText = this.add.text(150, 225, this.getHPDisplay(this.player), {
-      fontSize: '18px',
+    // Player HP
+    this.playerHPText = this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 38, this.getHPDisplay(this.player), {
+      fontSize: '16px',
       color: '#88ff88',
+      stroke: '#000000',
+      strokeThickness: 2,
     }).setOrigin(0.5);
 
-    this.playerStatusText = this.add.text(150, 250, '', {
+    // Player status effects
+    this.playerStatusText = this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 58, '', {
       fontSize: '12px',
       color: '#ffaa00',
+      stroke: '#000000',
+      strokeThickness: 1,
     }).setOrigin(0.5);
 
-    // CPU side (right) - sprite and info
-    this.add.text(width - 150, 50, `CPU ${this.cpuNumber}`, {
-      fontSize: '14px',
-      color: '#ff8888',
-    }).setOrigin(0.5);
-
-    // CPU sprite (flipped to face player)
+    // CPU sprite (right side, flipped)
     const cpuAnimalId = this.cpu.animal.id;
-    this.cpuSprite = this.createCombatantSprite(cpuAnimalId, width - 150, 140, true);
+    this.cpuSprite = this.createCombatantSprite(cpuAnimalId, CPU_X, SPRITE_Y, true);
 
-    this.add.text(width - 150, 200, this.getDisplayName(this.cpu), {
+    // CPU name under sprite
+    this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 15, this.getDisplayName(this.cpu), {
       fontSize: '16px',
       color: '#ffffff',
+      fontStyle: 'bold',
+      stroke: '#000000',
+      strokeThickness: 2,
     }).setOrigin(0.5);
 
-    this.cpuHPText = this.add.text(width - 150, 225, this.getHPDisplay(this.cpu), {
-      fontSize: '18px',
+    // CPU HP
+    this.cpuHPText = this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 38, this.getHPDisplay(this.cpu), {
+      fontSize: '16px',
       color: '#ff8888',
+      stroke: '#000000',
+      strokeThickness: 2,
     }).setOrigin(0.5);
 
-    this.cpuStatusText = this.add.text(width - 150, 250, '', {
+    // CPU status effects
+    this.cpuStatusText = this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 58, '', {
       fontSize: '12px',
       color: '#ffaa00',
+      stroke: '#000000',
+      strokeThickness: 1,
     }).setOrigin(0.5);
 
-    // Stats panels for each combatant
-    this.createStatsPanel(this.player, 150, 275);
-    this.createStatsPanel(this.cpu, width - 150, 275);
+    // Dice display in center of battle area
+    this.createDiceDisplay(width / 2, SPRITE_Y);
 
-    // Dice display in center
-    this.createDiceDisplay(width / 2, 140);
+    // ========== LOWER INFO PANEL (bottom 240px) ==========
 
-    // Battle log with toggle
-    this.add.text(width / 2, 350, 'Battle Log', {
-      fontSize: '16px',
+    // Info panel background
+    this.add.rectangle(width / 2, INFO_PANEL_Y + (height - INFO_PANEL_Y) / 2, width, height - INFO_PANEL_Y, 0x1a1a2e)
+      .setStrokeStyle(2, 0x3a3a5a);
+
+    // Divider line at top of info panel
+    this.add.rectangle(width / 2, INFO_PANEL_Y, width, 2, 0x4a4a6a);
+
+    // Player stats panel (left side)
+    this.createStatsPanel(this.player, 140, INFO_PANEL_Y + 30, '#88ff88', 'YOUR FIGHTER');
+
+    // CPU stats panel (right side)
+    this.createStatsPanel(this.cpu, width - 140, INFO_PANEL_Y + 30, '#ff8888', `ENEMY`);
+
+    // Battle log (center)
+    this.add.text(width / 2, INFO_PANEL_Y + 15, 'Battle Log', {
+      fontSize: '14px',
       color: '#aaaaaa',
     }).setOrigin(0.5);
 
-    this.logToggleBtn = this.add.text(width / 2 + 60, 350, '[hide]', {
-      fontSize: '12px',
+    this.logToggleBtn = this.add.text(width / 2 + 55, INFO_PANEL_Y + 15, '[hide]', {
+      fontSize: '11px',
       color: '#666666',
     }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
 
@@ -147,18 +184,19 @@ export class BattleScene extends Phaser.Scene {
     this.logToggleBtn.on('pointerover', () => this.logToggleBtn?.setColor('#888888'));
     this.logToggleBtn.on('pointerout', () => this.logToggleBtn?.setColor('#666666'));
 
-    this.logText = this.add.text(width / 2, 370, '', {
-      fontSize: '13px',
+    this.logText = this.add.text(width / 2, INFO_PANEL_Y + 35, '', {
+      fontSize: '12px',
       color: '#ffffff',
-      wordWrap: { width: 600 },
+      wordWrap: { width: 320 },
       align: 'center',
+      lineSpacing: 2,
     }).setOrigin(0.5, 0);
 
     // Determine first turn
     this.isPlayerTurn = this.diceRoller.coinFlip();
     this.addLog(`${this.isPlayerTurn ? 'You' : 'CPU'} go${this.isPlayerTurn ? '' : 'es'} first!`);
 
-    // Dev controls (bottom of screen)
+    // Dev controls (bottom of info panel)
     this.createDevControls(width);
 
     // Start combat loop
@@ -166,21 +204,19 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createDevControls(width: number): void {
-    const y = 550;
-    const btnStyle = { fontSize: '14px', color: '#ffffff', backgroundColor: '#333355', padding: { x: 8, y: 4 } };
+    const y = INFO_PANEL_Y + 200; // Near bottom of info panel
+    const btnStyle = { fontSize: '11px', color: '#ffffff', backgroundColor: '#333355', padding: { x: 6, y: 3 } };
 
     // Label
-    this.add.text(width / 2, y - 20, 'DEV CONTROLS', {
-      fontSize: '10px',
-      color: '#666666',
+    this.add.text(width / 2, y - 15, 'DEV', {
+      fontSize: '9px',
+      color: '#555555',
     }).setOrigin(0.5);
 
     // Player HP controls (left side)
-    this.add.text(100, y, 'Player HP:', { fontSize: '12px', color: '#88ff88' }).setOrigin(0.5);
-
-    const playerMinus = this.add.text(160, y, '-5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    const playerPlus = this.add.text(200, y, '+5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    const playerKill = this.add.text(250, y, 'Kill', { ...btnStyle, backgroundColor: '#553333' }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const playerMinus = this.add.text(70, y, '-5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const playerPlus = this.add.text(105, y, '+5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const playerKill = this.add.text(150, y, 'Kill P', { ...btnStyle, backgroundColor: '#553333' }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     playerMinus.on('pointerdown', () => {
       if (this.player && !this.battleEnded) {
@@ -204,11 +240,9 @@ export class BattleScene extends Phaser.Scene {
     });
 
     // CPU HP controls (right side)
-    this.add.text(width - 250, y, 'CPU HP:', { fontSize: '12px', color: '#ff8888' }).setOrigin(0.5);
-
-    const cpuMinus = this.add.text(width - 200, y, '-5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    const cpuPlus = this.add.text(width - 160, y, '+5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
-    const cpuKill = this.add.text(width - 100, y, 'Kill', { ...btnStyle, backgroundColor: '#553333' }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cpuMinus = this.add.text(width - 150, y, '-5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cpuPlus = this.add.text(width - 115, y, '+5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    const cpuKill = this.add.text(width - 70, y, 'Kill E', { ...btnStyle, backgroundColor: '#553333' }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     cpuMinus.on('pointerdown', () => {
       if (this.cpu && !this.battleEnded) {
@@ -246,7 +280,7 @@ export class BattleScene extends Phaser.Scene {
       const firstFrameKey = `${animalId}-${firstFramePath?.replace(/[\/\.]/g, '-')}`;
 
       const sprite = this.add.sprite(x, y, firstFrameKey)
-        .setDisplaySize(100, 100)
+        .setDisplaySize(SPRITE_SIZE, SPRITE_SIZE)
         .setFlipX(flipX);
 
       // Play idle animation if available
@@ -258,7 +292,7 @@ export class BattleScene extends Phaser.Scene {
     } else {
       // Fallback to static image
       return this.add.image(x, y, animalId)
-        .setDisplaySize(100, 100)
+        .setDisplaySize(SPRITE_SIZE, SPRITE_SIZE)
         .setFlipX(flipX);
     }
   }
@@ -381,15 +415,22 @@ export class BattleScene extends Phaser.Scene {
     return emojiMap[accessoryId] || '💎';
   }
 
-  private createStatsPanel(combatant: Combatant, x: number, y: number): void {
+  private createStatsPanel(combatant: Combatant, x: number, y: number, headerColor: string, headerText: string): void {
     const attackMod = this.combatSystem.getEffectiveAttackMod(combatant, null);
     const armor = this.combatSystem.getEffectiveArmor(combatant);
     const damage = this.combatSystem.getAttackDamage(combatant);
 
-    // Stats line
-    this.add.text(x, y, `⚔️ +${attackMod}  🛡️ ${armor}  💥 ${damage}`, {
+    // Panel header
+    this.add.text(x, y, headerText, {
       fontSize: '12px',
-      color: '#aaaaaa',
+      color: headerColor,
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+
+    // Stats line
+    this.add.text(x, y + 22, `⚔️ +${attackMod}  🛡️ ${armor}  💥 ${damage}`, {
+      fontSize: '13px',
+      color: '#ffffff',
     }).setOrigin(0.5);
 
     // Weapon line
@@ -402,7 +443,7 @@ export class BattleScene extends Phaser.Scene {
     if (combatant.weapon?.healOnHit) {
       weaponDesc += ` (+${combatant.weapon.healOnHit} heal)`;
     }
-    this.add.text(x, y + 18, weaponDesc, {
+    this.add.text(x, y + 44, weaponDesc, {
       fontSize: '11px',
       color: '#ff9966',
     }).setOrigin(0.5);
@@ -422,11 +463,22 @@ export class BattleScene extends Phaser.Scene {
       if (parts.length > 0) {
         accDesc += ` (${parts.join(', ')})`;
       }
-      this.add.text(x, y + 36, accDesc, {
+      this.add.text(x, y + 64, accDesc, {
         fontSize: '11px',
         color: '#66ff99',
       }).setOrigin(0.5);
+    } else {
+      this.add.text(x, y + 64, 'No accessory', {
+        fontSize: '11px',
+        color: '#666666',
+      }).setOrigin(0.5);
     }
+
+    // Passive ability
+    this.add.text(x, y + 90, `Passive: ${combatant.animal.passive.name}`, {
+      fontSize: '10px',
+      color: '#888888',
+    }).setOrigin(0.5);
   }
 
   private getHPDisplay(combatant: Combatant): string {

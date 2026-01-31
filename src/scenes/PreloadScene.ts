@@ -19,6 +19,9 @@ export class PreloadScene extends Phaser.Scene {
       loadingText.setText(`Loading... ${Math.round(value * 100)}%`);
     });
 
+    // Load battle backgrounds
+    this.load.image('battle-bg-1', 'BattleMaps/battle-scene-1.png');
+
     // Load static animal sprites (relative paths for GitHub Pages compatibility)
     this.load.image('rat', 'sprites/rat.png');
     this.load.image('toad', 'sprites/toad.png');
