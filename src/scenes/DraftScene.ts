@@ -3,6 +3,7 @@ import type { Weapon, Accessory } from '../types';
 import { gameStateManager } from '../GameStateManager';
 import { isWeapon, DRAFT_WEAPONS, DRAFT_ACCESSORIES } from '../data/draftGear';
 import { WEAPONS, ACCESSORIES } from '../data';
+import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
 
 interface StatChoice {
   type: 'heal' | 'maxHp' | 'attack' | 'armor';
@@ -135,9 +136,21 @@ export class DraftScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    // Animal sprite
-    const sprite = this.add.image(0, 80, state.player.animal.id)
-      .setDisplaySize(90, 90);
+    // Animal sprite - handle animated vs static
+    const animalId = state.player.animal.id;
+    let sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
+
+    if (hasAnimatedSprite(animalId)) {
+      const config = SPRITE_CONFIGS[animalId];
+      const firstFramePath = config.animations.idle?.frames[0] || config.animations.jump?.frames[0];
+      const frameKey = `${animalId}-${firstFramePath?.replace(/[\/\.]/g, '-')}`;
+      sprite = this.add.sprite(0, 80, frameKey).setDisplaySize(90, 90);
+      if (config.animations.idle) {
+        (sprite as Phaser.GameObjects.Sprite).play(config.animations.idle.key);
+      }
+    } else {
+      sprite = this.add.image(0, 80, animalId).setDisplaySize(90, 90);
+    }
 
     // Animal name
     const name = this.add.text(0, 140, state.player.animal.name, {
