@@ -6,22 +6,22 @@ describe('animals data', () => {
     expect(ANIMALS.length).toBe(5);
   });
 
-  it('should include all MVP animals', () => {
+  it('should include all playable animals', () => {
     const ids = ANIMALS.map(a => a.id);
-    expect(ids).toContain('rat');
+    expect(ids).toContain('pang');
     expect(ids).toContain('toad');
-    expect(ids).toContain('spider');
-    expect(ids).toContain('mosquito');
+    expect(ids).toContain('beep-boop');
+    expect(ids).toContain('moo-man');
     expect(ids).toContain('beetle');
   });
 
-  it('should retrieve rat by id', () => {
-    const rat = getAnimalById('rat');
-    expect(rat).toBeDefined();
-    expect(rat?.name).toBe('Rat');
-    expect(rat?.stats.hp).toBe(20);
-    expect(rat?.stats.attackMod).toBe(3);
-    expect(rat?.stats.armor).toBe(10);
+  it('should retrieve pang by id', () => {
+    const pang = getAnimalById('pang');
+    expect(pang).toBeDefined();
+    expect(pang?.name).toBe('Pang');
+    expect(pang?.stats.hp).toBe(16);
+    expect(pang?.stats.attackMod).toBe(4);
+    expect(pang?.stats.armor).toBe(9);
   });
 
   it('should have valid unarmed attacks', () => {

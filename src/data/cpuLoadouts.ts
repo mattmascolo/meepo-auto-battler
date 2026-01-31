@@ -19,13 +19,13 @@ const CPU_LOADOUT_DEFS: CPULoadoutDef[] = [
   },
   {
     difficulty: 2,
-    animalId: 'rat',
+    animalId: 'toad',
     weaponId: 'flame-stick',
     accessoryId: 'lucky-pebble',
   },
   {
     difficulty: 3,
-    animalId: 'spider',
+    animalId: 'toad',
     weaponId: 'venom-fang',
     accessoryId: 'adrenaline-gland',
   },

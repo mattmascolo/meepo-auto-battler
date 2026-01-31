@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { Animal, Weapon, Accessory } from '../types';
 import { ANIMALS, WEAPONS, ACCESSORIES } from '../data';
 import { gameStateManager } from '../GameStateManager';
+import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
 
 export class LoadoutScene extends Phaser.Scene {
   private selectedAnimal: Animal | null = null;
@@ -10,7 +11,7 @@ export class LoadoutScene extends Phaser.Scene {
 
   private startButton: Phaser.GameObjects.Text | null = null;
   private previewContainer: Phaser.GameObjects.Container | null = null;
-  private previewSprite: Phaser.GameObjects.Image | null = null;
+  private previewSprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image | null = null;
   private previewStatsText: Phaser.GameObjects.Text | null = null;
   private previewGearText: Phaser.GameObjects.Text | null = null;
 
@@ -141,9 +142,19 @@ export class LoadoutScene extends Phaser.Scene {
       const bg = this.add.rectangle(0, 0, cardWidth, cardHeight, 0x2a2a4a)
         .setStrokeStyle(2, 0x4a4a6a);
 
-      // Animal sprite
-      const sprite = this.add.image(0, -25, animal.id)
-        .setDisplaySize(60, 60);
+      // Animal sprite (animated if available)
+      let sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
+      if (hasAnimatedSprite(animal.id)) {
+        const config = SPRITE_CONFIGS[animal.id];
+        const firstFramePath = config.animations.idle?.frames[0] || config.animations.attack?.frames[0];
+        const firstFrameKey = `${animal.id}-${firstFramePath?.replace(/[\/\.]/g, '-')}`;
+        sprite = this.add.sprite(0, -25, firstFrameKey).setDisplaySize(60, 60);
+        if (config.animations.idle) {
+          (sprite as Phaser.GameObjects.Sprite).play(config.animations.idle.key);
+        }
+      } else {
+        sprite = this.add.image(0, -25, animal.id).setDisplaySize(60, 60);
+      }
 
       // Animal name
       const name = this.add.text(0, 20, animal.name, {
@@ -329,8 +340,8 @@ export class LoadoutScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    // Placeholder sprite area
-    this.previewSprite = this.add.image(0, 90, 'rat')
+    // Placeholder sprite area (will be replaced when animal selected)
+    this.previewSprite = this.add.sprite(0, 90, 'rat')
       .setDisplaySize(100, 100)
       .setAlpha(0.3);
 
@@ -492,7 +503,22 @@ export class LoadoutScene extends Phaser.Scene {
 
     // Show selected animal
     selectPrompt.setVisible(false);
-    this.previewSprite.setTexture(this.selectedAnimal.id);
+
+    // Handle animated vs static sprites
+    if (hasAnimatedSprite(this.selectedAnimal.id)) {
+      const config = SPRITE_CONFIGS[this.selectedAnimal.id];
+      const firstFramePath = config.animations.idle?.frames[0] || config.animations.attack?.frames[0];
+      const firstFrameKey = `${this.selectedAnimal.id}-${firstFramePath?.replace(/[\/\.]/g, '-')}`;
+      this.previewSprite.setTexture(firstFrameKey);
+      if (this.previewSprite instanceof Phaser.GameObjects.Sprite && config.animations.idle) {
+        this.previewSprite.play(config.animations.idle.key);
+      }
+    } else {
+      this.previewSprite.setTexture(this.selectedAnimal.id);
+      if (this.previewSprite instanceof Phaser.GameObjects.Sprite) {
+        this.previewSprite.stop();
+      }
+    }
     this.previewSprite.setAlpha(1);
 
     // Calculate effective stats
