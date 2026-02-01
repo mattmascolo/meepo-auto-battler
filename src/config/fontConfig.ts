@@ -5,8 +5,8 @@
 // Primary font: Press Start 2P (retro pixel font) - for titles, headers, buttons
 export const FONT_FAMILY = '"Press Start 2P", monospace';
 
-// Secondary font: VT323 (terminal-style pixel font) - for body text, stats, logs
-export const FONT_FAMILY_SECONDARY = '"VT323", monospace';
+// Secondary font: Inter (clean sans-serif) - for body text, stats, logs
+export const FONT_FAMILY_SECONDARY = '"Inter", sans-serif';
 
 // Common text style presets
 export const TEXT_STYLES = {
