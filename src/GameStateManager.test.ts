@@ -46,7 +46,7 @@ describe('GameStateManager', () => {
 
       const cpu = manager.getCurrentCPUCombatant();
 
-      expect(cpu?.animal.id).toBe('sarah');
+      expect(cpu?.animal.id).toBe('humphrey');
       expect(cpu?.weapon).toBeNull();
       expect(cpu?.accessory).toBeNull();
     });
@@ -67,7 +67,7 @@ describe('GameStateManager', () => {
       expect(manager.getState()?.run.currentCPU).toBe(2);
 
       const cpu2 = manager.getCurrentCPUCombatant();
-      expect(cpu2?.animal.id).toBe('humphrey');
+      expect(cpu2?.animal.id).toBe('sarah');
     });
 
     it('should not advance past CPU 4', () => {

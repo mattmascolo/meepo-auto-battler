@@ -13,16 +13,16 @@ describe('CPU loadouts data', () => {
     expect(getCPULoadout(4)).toBeDefined();
   });
 
-  it('CPU 1 (easy) should be Sarah with no items', () => {
+  it('CPU 1 (easy) should be Humphrey with no items', () => {
     const cpu1 = getCPULoadout(1);
-    expect(cpu1?.animal.id).toBe('sarah');
+    expect(cpu1?.animal.id).toBe('humphrey');
     expect(cpu1?.weapon).toBeNull();
     expect(cpu1?.accessory).toBeNull();
   });
 
-  it('CPU 2 (medium) should be Humphrey with no items', () => {
+  it('CPU 2 (medium) should be Sarah with no items', () => {
     const cpu2 = getCPULoadout(2);
-    expect(cpu2?.animal.id).toBe('humphrey');
+    expect(cpu2?.animal.id).toBe('sarah');
     expect(cpu2?.weapon).toBeNull();
     expect(cpu2?.accessory).toBeNull();
   });
