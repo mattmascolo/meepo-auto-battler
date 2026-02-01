@@ -46,6 +46,11 @@ export class BattleScene extends Phaser.Scene {
   private battleEnded: boolean = false;
   private cpuNumber: 1 | 2 | 3 | 4 = 1;
 
+  // Dev controls
+  private devContainer: Phaser.GameObjects.Container | null = null;
+  private devToggleBtn: Phaser.GameObjects.Text | null = null;
+  private devVisible: boolean = false;
+
   constructor() {
     super({ key: 'BattleScene' });
     this.diceRoller = new DiceRoller();
@@ -207,11 +212,18 @@ export class BattleScene extends Phaser.Scene {
     const y = INFO_PANEL_Y + 200; // Near bottom of info panel
     const btnStyle = { fontSize: '11px', color: '#ffffff', backgroundColor: '#333355', padding: { x: 6, y: 3 } };
 
-    // Label
-    this.add.text(width / 2, y - 15, 'DEV', {
+    // Toggle button (always visible)
+    this.devToggleBtn = this.add.text(width / 2, y - 15, '[dev]', {
       fontSize: '9px',
-      color: '#555555',
-    }).setOrigin(0.5);
+      color: '#444444',
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    this.devToggleBtn.on('pointerdown', () => this.toggleDevControls());
+    this.devToggleBtn.on('pointerover', () => this.devToggleBtn?.setColor('#666666'));
+    this.devToggleBtn.on('pointerout', () => this.devToggleBtn?.setColor('#444444'));
+
+    // Container for dev controls (hidden by default)
+    this.devContainer = this.add.container(0, 0);
 
     // Player HP controls (left side)
     const playerMinus = this.add.text(70, y, '-5', btnStyle).setOrigin(0.5).setInteractive({ useHandCursor: true });
@@ -264,6 +276,15 @@ export class BattleScene extends Phaser.Scene {
         this.updateDisplay();
       }
     });
+
+    // Add all controls to container
+    this.devContainer.add([playerMinus, playerPlus, playerKill, cpuMinus, cpuPlus, cpuKill]);
+    this.devContainer.setVisible(false);
+  }
+
+  private toggleDevControls(): void {
+    this.devVisible = !this.devVisible;
+    this.devContainer?.setVisible(this.devVisible);
   }
 
   private createCombatantSprite(
