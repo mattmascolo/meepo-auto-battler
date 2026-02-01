@@ -25,9 +25,18 @@
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
       }
+      /* Hidden element to force font loading */
+      .font-preload {
+        font-family: 'Press Start 2P', monospace;
+        position: absolute;
+        left: -9999px;
+        visibility: hidden;
+      }
     </style>
   </head>
   <body>
+    <!-- Force browser to load the font before Phaser renders -->
+    <span class="font-preload">Loading...</span>
     <div id="game-container"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

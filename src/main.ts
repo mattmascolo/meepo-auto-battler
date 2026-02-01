@@ -19,4 +19,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
 };
 
-new Phaser.Game(config);
+// Wait for fonts to load before starting Phaser
+document.fonts.ready.then(() => {
+  new Phaser.Game(config);
+});
