@@ -3,6 +3,7 @@ import type { Combatant } from '../types';
 import { gameStateManager } from '../GameStateManager';
 import { CombatSystem, DiceRoller, StatusManager, type CombatEvent } from '../systems';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { FONT_FAMILY } from '../config/fontConfig';
 
 const TURN_DELAY = 2000; // ms between turns (slower for readability)
 const DICE_ROLL_DURATION = 800; // ms for dice animation
@@ -98,9 +99,9 @@ export class BattleScene extends Phaser.Scene {
 
     // Battle header
     this.add.text(width / 2, 25, `Battle ${this.cpuNumber} of 4`, {
-      fontSize: '22px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '14px',
       color: '#ffffff',
-      fontStyle: 'bold',
       stroke: '#000000',
       strokeThickness: 3,
     }).setOrigin(0.5);

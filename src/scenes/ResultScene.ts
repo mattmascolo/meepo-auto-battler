@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { FONT_FAMILY } from '../config/fontConfig';
 
 export class ResultScene extends Phaser.Scene {
   constructor() {
@@ -33,14 +34,15 @@ export class ResultScene extends Phaser.Scene {
 
   private createVictoryScreen(width: number, height: number, state: any): void {
     // Victory title with glow effect
-    this.add.text(width / 2, 50, '🏆 VICTORY 🏆', {
-      fontSize: '48px',
+    this.add.text(width / 2, 50, 'VICTORY', {
+      fontFamily: FONT_FAMILY,
+      fontSize: '24px',
       color: '#ffdd44',
-      fontStyle: 'bold',
     }).setOrigin(0.5);
 
     this.add.text(width / 2, 95, 'You conquered the gauntlet!', {
-      fontSize: '20px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '10px',
       color: '#88ff88',
     }).setOrigin(0.5);
 
@@ -149,14 +151,15 @@ export class ResultScene extends Phaser.Scene {
   private createDefeatScreen(width: number, height: number, state: any): void {
     // Defeat title
     this.add.text(width / 2, 50, 'DEFEAT', {
-      fontSize: '48px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '24px',
       color: '#ff6666',
-      fontStyle: 'bold',
     }).setOrigin(0.5);
 
     const cpuNumber = state?.run.currentCPU ?? 1;
     this.add.text(width / 2, 95, `Fell in Battle ${cpuNumber}`, {
-      fontSize: '20px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '10px',
       color: '#aaaaaa',
     }).setOrigin(0.5);
 
@@ -223,7 +226,8 @@ export class ResultScene extends Phaser.Scene {
   private createButtons(width: number, height: number): void {
     // Play again button
     const playAgainButton = this.add.text(width / 2, height - 90, 'Play Again', {
-      fontSize: '26px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '14px',
       color: '#ffffff',
       backgroundColor: '#4a6a4a',
       padding: { x: 35, y: 12 },
@@ -246,7 +250,8 @@ export class ResultScene extends Phaser.Scene {
 
     // Main menu button
     const menuButton = this.add.text(width / 2, height - 40, 'Main Menu', {
-      fontSize: '16px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '10px',
       color: '#888888',
     })
       .setOrigin(0.5)

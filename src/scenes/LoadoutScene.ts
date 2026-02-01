@@ -3,6 +3,7 @@ import type { Animal } from '../types';
 import { PLAYABLE_ANIMALS } from '../data';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { FONT_FAMILY } from '../config/fontConfig';
 
 const CHARACTERS_PER_PAGE = 6;
 
@@ -43,9 +44,9 @@ export class LoadoutScene extends Phaser.Scene {
 
     // Title
     this.add.text(width / 2, 30, 'Choose Your Character', {
-      fontSize: '32px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '16px',
       color: '#ffffff',
-      fontStyle: 'bold',
     }).setOrigin(0.5);
 
     // Create initial grid
@@ -58,8 +59,9 @@ export class LoadoutScene extends Phaser.Scene {
     this.createPreviewPanel(width - 220, 70);
 
     // Start button
-    this.startButton = this.add.text(width / 2, height - 40, '⚔️  Begin Gauntlet  ⚔️', {
-      fontSize: '24px',
+    this.startButton = this.add.text(width / 2, height - 40, 'Begin Gauntlet', {
+      fontFamily: FONT_FAMILY,
+      fontSize: '12px',
       color: '#666666',
       backgroundColor: '#333333',
       padding: { x: 30, y: 12 },

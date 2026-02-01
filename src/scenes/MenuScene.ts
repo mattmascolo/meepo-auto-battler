@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { audioManager } from '../systems/AudioManager';
+import { FONT_FAMILY } from '../config/fontConfig';
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -19,14 +20,15 @@ export class MenuScene extends Phaser.Scene {
 
     // Title
     this.add.text(width / 2, height / 3, 'Project Meepo', {
-      fontSize: '48px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '24px',
       color: '#ffffff',
-      fontStyle: 'bold',
     }).setOrigin(0.5);
 
     // Start button
     const startButton = this.add.text(width / 2, height / 2 + 50, 'Start Game', {
-      fontSize: '32px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '14px',
       color: '#ffffff',
       backgroundColor: '#4a4a6a',
       padding: { x: 30, y: 15 },
@@ -48,7 +50,8 @@ export class MenuScene extends Phaser.Scene {
 
     // Gallery button
     const galleryButton = this.add.text(width / 2, height / 2 + 120, 'Character Gallery', {
-      fontSize: '24px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '12px',
       color: '#ffffff',
       backgroundColor: '#4a4a6a',
       padding: { x: 20, y: 10 },

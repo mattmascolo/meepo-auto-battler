@@ -4,6 +4,7 @@ import { gameStateManager } from '../GameStateManager';
 import { isWeapon, DRAFT_WEAPONS, DRAFT_ACCESSORIES } from '../data/draftGear';
 import { WEAPONS, ACCESSORIES } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { FONT_FAMILY } from '../config/fontConfig';
 
 interface StatChoice {
   type: 'heal' | 'maxHp' | 'attack' | 'armor';
@@ -85,9 +86,9 @@ export class DraftScene extends Phaser.Scene {
     // Header
     const cpuNumber = state.run.currentCPU;
     this.add.text(width / 2, 20, `Victory! Prepare for Battle ${cpuNumber + 1}`, {
-      fontSize: '24px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '12px',
       color: '#88ff88',
-      fontStyle: 'bold',
     }).setOrigin(0.5);
 
     // Current fighter preview panel (left side)
@@ -122,8 +123,9 @@ export class DraftScene extends Phaser.Scene {
     this.createGearCards(selectionX, 270);
 
     // Continue button
-    this.continueButton = this.add.text(width / 2, height - 35, '⚔️  Continue to Battle  ⚔️', {
-      fontSize: '22px',
+    this.continueButton = this.add.text(width / 2, height - 35, 'Continue to Battle', {
+      fontFamily: FONT_FAMILY,
+      fontSize: '11px',
       color: '#666666',
       backgroundColor: '#333333',
       padding: { x: 25, y: 12 },

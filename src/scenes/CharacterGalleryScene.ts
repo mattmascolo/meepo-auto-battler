@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { Animal } from '../types';
 import { ANIMALS, PLAYABLE_ANIMALS } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { FONT_FAMILY } from '../config/fontConfig';
 
 const CHARACTERS_PER_PAGE = 12;
 const GRID_COLS = 3;
@@ -67,9 +68,9 @@ export class CharacterGalleryScene extends Phaser.Scene {
 
     // Title
     this.add.text(width / 2, 30, 'Character Gallery', {
-      fontSize: '32px',
+      fontFamily: FONT_FAMILY,
+      fontSize: '16px',
       color: '#ffffff',
-      fontStyle: 'bold',
     }).setOrigin(0.5);
 
     // Divider line between grid and detail panel
