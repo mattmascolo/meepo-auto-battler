@@ -84,8 +84,9 @@ export class BattleScene extends Phaser.Scene {
 
     // ========== UPPER BATTLE AREA (top 360px) ==========
 
-    // Background image - scaled to fill battle area
-    const bg = this.add.image(width / 2, BATTLE_AREA_HEIGHT / 2, 'battle-bg-1');
+    // Background image - select based on enemy
+    const bgKey = this.getBattleBackground(this.cpu.animal.id);
+    const bg = this.add.image(width / 2, BATTLE_AREA_HEIGHT / 2, bgKey);
     const bgScale = Math.max(width / bg.width, BATTLE_AREA_HEIGHT / bg.height);
     bg.setScale(bgScale);
 
@@ -285,6 +286,14 @@ export class BattleScene extends Phaser.Scene {
   private toggleDevControls(): void {
     this.devVisible = !this.devVisible;
     this.devContainer?.setVisible(this.devVisible);
+  }
+
+  private getBattleBackground(enemyId: string): string {
+    const enemyBackgrounds: Record<string, string> = {
+      'sarah': 'battle-bg-sarah',
+      'wilber': 'battle-bg-wilber',
+    };
+    return enemyBackgrounds[enemyId] || 'battle-bg-default';
   }
 
   private createCombatantSprite(

@@ -20,7 +20,9 @@ export class PreloadScene extends Phaser.Scene {
     });
 
     // Load battle backgrounds
-    this.load.image('battle-bg-1', 'BattleMaps/battle-scene-1.png');
+    this.load.image('battle-bg-default', 'BattleMaps/battle-scene-1.png');
+    this.load.image('battle-bg-sarah', 'BattleMaps/Sarah.jpg');
+    this.load.image('battle-bg-wilber', 'BattleMaps/Wilber.jpg');
 
     // Load music
     this.load.audio('menu-music', 'music/Meepo-Menu-Chill.mp3');
