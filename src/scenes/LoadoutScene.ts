@@ -4,6 +4,8 @@ import { PLAYABLE_ANIMALS } from '../data';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
 
+const CHARACTERS_PER_PAGE = 6;
+
 export class LoadoutScene extends Phaser.Scene {
   private selectedAnimal: Animal | null = null;
 
@@ -13,8 +15,17 @@ export class LoadoutScene extends Phaser.Scene {
 
   private animalCards: Phaser.GameObjects.Container[] = [];
 
+  private currentPage = 0;
+  private pageText: Phaser.GameObjects.Text | null = null;
+  private prevButton: Phaser.GameObjects.Text | null = null;
+  private nextButton: Phaser.GameObjects.Text | null = null;
+
   constructor() {
     super({ key: 'LoadoutScene' });
+  }
+
+  private get totalPages(): number {
+    return Math.ceil(PLAYABLE_ANIMALS.length / CHARACTERS_PER_PAGE);
   }
 
   create(): void {
@@ -23,6 +34,7 @@ export class LoadoutScene extends Phaser.Scene {
     // Reset selections
     this.selectedAnimal = null;
     this.animalCards = [];
+    this.currentPage = 0;
 
     // Title
     this.add.text(width / 2, 30, 'Choose Your Character', {
@@ -31,8 +43,11 @@ export class LoadoutScene extends Phaser.Scene {
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
-    // Character grid - centered
+    // Create initial grid
     this.createAnimalCards(width, height);
+
+    // Pagination controls
+    this.createPaginationControls(width, height);
 
     // Preview panel on the right
     this.createPreviewPanel(width - 220, 70);
@@ -71,21 +86,94 @@ export class LoadoutScene extends Phaser.Scene {
     this.updateStartButton();
   }
 
+  private createPaginationControls(width: number, height: number): void {
+    const y = height - 100;
+    const centerX = width / 2 - 100; // Offset left since preview panel is on right
+
+    // Previous button
+    this.prevButton = this.add.text(centerX - 80, y, '◀', {
+      fontSize: '24px',
+      color: '#666666',
+    })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    this.prevButton.on('pointerdown', () => {
+      if (this.currentPage > 0) {
+        this.currentPage--;
+        this.refreshGrid();
+      }
+    });
+
+    // Page indicator
+    this.pageText = this.add.text(centerX, y, '', {
+      fontSize: '16px',
+      color: '#888888',
+    }).setOrigin(0.5);
+
+    // Next button
+    this.nextButton = this.add.text(centerX + 80, y, '▶', {
+      fontSize: '24px',
+      color: '#666666',
+    })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    this.nextButton.on('pointerdown', () => {
+      if (this.currentPage < this.totalPages - 1) {
+        this.currentPage++;
+        this.refreshGrid();
+      }
+    });
+
+    this.updatePaginationControls();
+  }
+
+  private updatePaginationControls(): void {
+    if (this.pageText) {
+      this.pageText.setText(`${this.currentPage + 1} / ${this.totalPages}`);
+    }
+
+    if (this.prevButton) {
+      this.prevButton.setColor(this.currentPage > 0 ? '#ffffff' : '#444444');
+    }
+
+    if (this.nextButton) {
+      this.nextButton.setColor(this.currentPage < this.totalPages - 1 ? '#ffffff' : '#444444');
+    }
+  }
+
+  private refreshGrid(): void {
+    const { width, height } = this.cameras.main;
+
+    // Clear existing cards
+    this.animalCards.forEach(card => card.destroy());
+    this.animalCards = [];
+
+    // Recreate grid
+    this.createAnimalCards(width, height);
+    this.updatePaginationControls();
+  }
+
   private createAnimalCards(screenWidth: number, screenHeight: number): void {
     const cardWidth = 120;
     const cardHeight = 140;
     const spacing = 12;
     const cols = 3;
-    const rows = Math.ceil(PLAYABLE_ANIMALS.length / cols);
+    const rows = 2;
 
     const gridWidth = cols * cardWidth + (cols - 1) * spacing;
     const gridHeight = rows * cardHeight + (rows - 1) * spacing;
     const startX = (screenWidth - gridWidth) / 2 - 100;
-    const startY = (screenHeight - gridHeight) / 2 + 10;
+    const startY = (screenHeight - gridHeight) / 2 - 20;
 
-    PLAYABLE_ANIMALS.forEach((animal, index) => {
-      const col = index % cols;
-      const row = Math.floor(index / cols);
+    // Get animals for current page
+    const startIndex = this.currentPage * CHARACTERS_PER_PAGE;
+    const pageAnimals = PLAYABLE_ANIMALS.slice(startIndex, startIndex + CHARACTERS_PER_PAGE);
+
+    pageAnimals.forEach((animal, localIndex) => {
+      const col = localIndex % cols;
+      const row = Math.floor(localIndex / cols);
       const x = startX + col * (cardWidth + spacing) + cardWidth / 2;
       const y = startY + row * (cardHeight + spacing) + cardHeight / 2;
 
@@ -94,6 +182,12 @@ export class LoadoutScene extends Phaser.Scene {
       // Card background
       const bg = this.add.rectangle(0, 0, cardWidth, cardHeight, 0x2a2a4a)
         .setStrokeStyle(2, 0x4a4a6a);
+
+      // Check if this is the selected animal
+      if (this.selectedAnimal?.id === animal.id) {
+        bg.setFillStyle(0x4a4a6a);
+        bg.setStrokeStyle(3, 0x88ff88);
+      }
 
       // Animal sprite (animated if available)
       let sprite: Phaser.GameObjects.Sprite | Phaser.GameObjects.Image;
@@ -140,11 +234,12 @@ export class LoadoutScene extends Phaser.Scene {
       });
 
       bg.on('pointerdown', () => {
-        this.selectAnimal(animal, index);
+        this.selectAnimal(animal, localIndex);
       });
 
       this.animalCards.push(container);
       (container as any)._bg = bg;
+      (container as any)._animalId = animal.id;
     });
   }
 
@@ -177,17 +272,20 @@ export class LoadoutScene extends Phaser.Scene {
     (this.previewContainer as any)._panelHeight = panelHeight;
   }
 
-  private selectAnimal(animal: Animal, index: number): void {
-    // Clear previous selection
+  private selectAnimal(animal: Animal, localIndex: number): void {
+    // Clear previous selection on current page
     this.animalCards.forEach(card => {
       const bg = (card as any)._bg as Phaser.GameObjects.Rectangle;
-      bg.setFillStyle(0x2a2a4a);
-      bg.setStrokeStyle(2, 0x4a4a6a);
+      const cardAnimalId = (card as any)._animalId;
+      if (cardAnimalId !== animal.id) {
+        bg.setFillStyle(0x2a2a4a);
+        bg.setStrokeStyle(2, 0x4a4a6a);
+      }
     });
 
     // Select new
     this.selectedAnimal = animal;
-    const bg = (this.animalCards[index] as any)._bg as Phaser.GameObjects.Rectangle;
+    const bg = (this.animalCards[localIndex] as any)._bg as Phaser.GameObjects.Rectangle;
     bg.setFillStyle(0x4a4a6a);
     bg.setStrokeStyle(3, 0x88ff88);
 

@@ -325,11 +325,14 @@ export const ANIMALS: Animal[] = [
 ];
 
 // Enemy-only animals (not selectable by player)
-// Playable: pang, moo-man, oswald, finn, wyatt, quatack, sir-pokesalot
-const ENEMY_ONLY_IDS = new Set(['beep-boop', 'stranger', 'wilber', 'geezer', 'sarah', 'humphrey', 'thomas', 'blackjack', 'murder', 'pooty', 'esmeralda']);
+// Playable: pang, moo-man, oswald, finn, wyatt, quatack, sir-pokesalot, beep-boop
+const ENEMY_ONLY_IDS = new Set(['stranger', 'wilber', 'geezer', 'sarah', 'humphrey', 'thomas', 'blackjack', 'murder', 'pooty', 'esmeralda']);
 
-// Playable animals for character selection
-export const PLAYABLE_ANIMALS: Animal[] = ANIMALS.filter(a => !ENEMY_ONLY_IDS.has(a.id));
+// Playable animals for character selection (in specific order for pagination)
+const PLAYABLE_ORDER = ['pang', 'moo-man', 'oswald', 'finn', 'wyatt', 'quatack', 'sir-pokesalot', 'beep-boop'];
+export const PLAYABLE_ANIMALS: Animal[] = PLAYABLE_ORDER
+  .map(id => ANIMALS.find(a => a.id === id))
+  .filter((a): a is Animal => a !== undefined && !ENEMY_ONLY_IDS.has(a.id));
 
 export function getAnimalById(id: string): Animal | undefined {
   return ANIMALS.find(a => a.id === id);
