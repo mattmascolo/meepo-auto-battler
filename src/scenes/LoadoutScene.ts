@@ -31,6 +31,11 @@ export class LoadoutScene extends Phaser.Scene {
   create(): void {
     const { width, height } = this.cameras.main;
 
+    // Cleanup on shutdown (only scene-local UI)
+    this.events.once('shutdown', () => {
+      this.tweens.killAll();
+    });
+
     // Reset selections
     this.selectedAnimal = null;
     this.animalCards = [];

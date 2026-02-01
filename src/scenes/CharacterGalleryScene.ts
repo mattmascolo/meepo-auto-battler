@@ -28,6 +28,11 @@ export class CharacterGalleryScene extends Phaser.Scene {
   }
 
   create(): void {
+    // Cleanup on shutdown (only scene-local UI)
+    this.events.once('shutdown', () => {
+      this.tweens.killAll();
+    });
+
     this.characterCards = [];
     this.animationButtons = [];
     this.selectedAnimal = null;

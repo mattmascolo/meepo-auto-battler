@@ -12,6 +12,11 @@ export class ResultScene extends Phaser.Scene {
   }
 
   create(): void {
+    // Cleanup on shutdown (only scene-local UI)
+    this.events.once('shutdown', () => {
+      this.tweens.killAll();
+    });
+
     const { width, height } = this.cameras.main;
     const victory = this.data.get('victory') as boolean;
     const state = gameStateManager.getState();

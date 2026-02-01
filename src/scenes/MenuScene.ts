@@ -7,6 +7,11 @@ export class MenuScene extends Phaser.Scene {
   }
 
   create(): void {
+    // Cleanup on shutdown (only scene-local UI, not music)
+    this.events.once('shutdown', () => {
+      this.tweens.killAll();
+    });
+
     const { width, height } = this.cameras.main;
 
     // Initialize and start music

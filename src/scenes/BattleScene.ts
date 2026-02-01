@@ -67,6 +67,12 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    // Cleanup on shutdown (only scene-local UI, not game state)
+    this.events.once('shutdown', () => {
+      this.tweens.killAll();
+      this.time.removeAllEvents();
+    });
+
     // Reset battle state
     this.battleLog = [];
     this.battleEnded = false;

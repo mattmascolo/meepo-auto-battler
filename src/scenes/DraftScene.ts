@@ -59,6 +59,11 @@ export class DraftScene extends Phaser.Scene {
       return;
     }
 
+    // Cleanup on shutdown (only scene-local UI, not game state)
+    this.events.once('shutdown', () => {
+      this.tweens.killAll();
+    });
+
     // Reset
     this.selectedStat = null;
     this.selectedGear = null;

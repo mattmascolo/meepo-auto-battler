@@ -27,13 +27,6 @@ export class PreloadScene extends Phaser.Scene {
     // Load music
     this.load.audio('menu-music', 'music/Meepo-Menu-Chill.mp3');
 
-    // Load static animal sprites (relative paths for GitHub Pages compatibility)
-    this.load.image('rat', 'sprites/rat.png');
-    this.load.image('toad', 'sprites/toad.png');
-    this.load.image('spider', 'sprites/spider.png');
-    this.load.image('mosquito', 'sprites/mosquito.png');
-    this.load.image('beetle', 'sprites/beetle.png');
-
     // Load animated character sprites
     for (const animalId of Object.keys(SPRITE_CONFIGS)) {
       const frames = getAllFrameKeys(animalId);
