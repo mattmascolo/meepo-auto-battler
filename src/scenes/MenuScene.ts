@@ -12,9 +12,6 @@ export class MenuScene extends Phaser.Scene {
     // Initialize and start music
     audioManager.initialize(this);
 
-    // Add mute button in bottom right
-    audioManager.createMuteButton(this);
-
     // Title
     this.add.text(width / 2, height / 3, 'Project Meepo', {
       fontSize: '48px',

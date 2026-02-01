@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { audioManager } from '../systems/AudioManager';
 
 export class ResultScene extends Phaser.Scene {
   constructor() {
@@ -25,9 +24,6 @@ export class ResultScene extends Phaser.Scene {
 
     // Buttons at bottom
     this.createButtons(width, height);
-
-    // Add mute button
-    audioManager.createMuteButton(this);
   }
 
   private createVictoryScreen(width: number, height: number, state: any): void {

@@ -3,7 +3,6 @@ import type { Animal } from '../types';
 import { PLAYABLE_ANIMALS } from '../data';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { audioManager } from '../systems/AudioManager';
 
 export class LoadoutScene extends Phaser.Scene {
   private selectedAnimal: Animal | null = null;
@@ -70,9 +69,6 @@ export class LoadoutScene extends Phaser.Scene {
     });
 
     this.updateStartButton();
-
-    // Add mute button
-    audioManager.createMuteButton(this);
   }
 
   private createAnimalCards(screenWidth: number, screenHeight: number): void {

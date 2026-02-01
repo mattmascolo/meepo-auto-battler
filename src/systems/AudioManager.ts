@@ -32,32 +32,6 @@ class AudioManager {
     this.isMuted = !this.isMuted;
     return this.isMuted;
   }
-
-  createMuteButton(scene: Phaser.Scene): Phaser.GameObjects.Text {
-    const { width, height } = scene.cameras.main;
-
-    const button = scene.add.text(width - 20, height - 20, this.isMuted ? '🔇' : '🔊', {
-      fontSize: '28px',
-    })
-      .setOrigin(1, 1)
-      .setInteractive({ useHandCursor: true })
-      .setDepth(1000);
-
-    button.on('pointerdown', () => {
-      const muted = this.toggle();
-      button.setText(muted ? '🔇' : '🔊');
-    });
-
-    button.on('pointerover', () => {
-      button.setScale(1.2);
-    });
-
-    button.on('pointerout', () => {
-      button.setScale(1);
-    });
-
-    return button;
-  }
 }
 
 export const audioManager = new AudioManager();

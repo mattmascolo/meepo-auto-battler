@@ -5,3 +5,4 @@ export { BattleScene } from './BattleScene';
 export { DraftScene } from './DraftScene';
 export { ResultScene } from './ResultScene';
 export { CharacterGalleryScene } from './CharacterGalleryScene';
+export { UIScene } from './UIScene';

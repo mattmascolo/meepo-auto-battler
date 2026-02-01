@@ -45,6 +45,9 @@ export class PreloadScene extends Phaser.Scene {
     // Create animations for animated characters
     this.createAnimations();
 
+    // Launch persistent UI scene (runs in parallel on top)
+    this.scene.launch('UIScene');
+
     // Go to menu scene
     this.scene.start('MenuScene');
   }
