@@ -4,8 +4,8 @@ import { ANIMALS, PLAYABLE_ANIMALS } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
 import { FONT_FAMILY, FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
-const CHARACTERS_PER_PAGE = 12;
-const GRID_COLS = 3;
+const CHARACTERS_PER_PAGE = 8;
+const GRID_COLS = 2;
 
 export class CharacterGalleryScene extends Phaser.Scene {
   private selectedAnimal: Animal | null = null;
