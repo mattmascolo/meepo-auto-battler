@@ -9,7 +9,6 @@ export class UIScene extends Phaser.Scene {
   private scaleModes = [
     { label: '1x', zoom: 1 },
     { label: '1.5x', zoom: 1.5 },
-    { label: '2x', zoom: 2 },
     { label: 'Fit', zoom: 0 }, // 0 means fit to screen
   ];
 
