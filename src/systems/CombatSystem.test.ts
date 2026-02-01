@@ -2,15 +2,21 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { CombatSystem } from './CombatSystem';
 import { DiceRoller } from './DiceRoller';
 import { StatusManager } from './StatusManager';
-import type { Combatant } from '../types';
+import { PassiveResolver, createDefaultRegistry } from './passives';
+import type { Combatant, Accessory } from '../types';
 import { getAnimalById } from '../data/animals';
 import { getWeaponById } from '../data/weapons';
-import { getAccessoryById } from '../data/accessories';
+import { ACCESSORIES } from '../data/accessories';
+import { DRAFT_ACCESSORIES } from '../data/draftGear';
+
+function findAccessory(id: string): Accessory | undefined {
+  return ACCESSORIES.find(a => a.id === id) || DRAFT_ACCESSORIES.find(a => a.id === id);
+}
 
 function createCombatant(animalId: string, weaponId?: string, accessoryId?: string): Combatant {
   const animal = getAnimalById(animalId)!;
   const weapon = weaponId ? getWeaponById(weaponId) ?? null : null;
-  const accessory = accessoryId ? getAccessoryById(accessoryId) ?? null : null;
+  const accessory = accessoryId ? findAccessory(accessoryId) ?? null : null;
   const bonusHP = accessory?.effect.hp ?? 0;
 
   return {
@@ -92,6 +98,35 @@ describe('CombatSystem', () => {
     it('should return base armor', () => {
       const sarah = createCombatant('sarah');
       expect(combatSystem.getEffectiveArmor(sarah)).toBe(14);
+    });
+
+    it('should apply oswald keen eye flat armor bonus', () => {
+      // Oswald has base armor 8 + Keen Eye +2 = 10
+      const oswald = createCombatant('oswald');
+      expect(combatSystem.getEffectiveArmor(oswald)).toBe(10);
+    });
+
+    it('should apply sir-pokesalot knight valor when below 50% HP', () => {
+      // Sir Pokesalot has base armor 13, +2 when below 50% HP
+      const sirPokesalot = createCombatant('sir-pokesalot');
+      // At full HP, should be 13
+      expect(combatSystem.getEffectiveArmor(sirPokesalot)).toBe(13);
+      // Below 50% HP (21/2 = 10.5), should be 15
+      sirPokesalot.currentHP = 10;
+      expect(combatSystem.getEffectiveArmor(sirPokesalot)).toBe(15);
+    });
+
+    it('should not apply sir-pokesalot bonus when above 50% HP', () => {
+      const sirPokesalot = createCombatant('sir-pokesalot');
+      // Above 50% HP (21 * 0.5 = 10.5), should NOT trigger
+      sirPokesalot.currentHP = 11; // Above threshold
+      expect(combatSystem.getEffectiveArmor(sirPokesalot)).toBe(13);
+    });
+
+    it('should add accessory armor bonus', () => {
+      // beep-boop (11) + dragons_scale (+2) = 13
+      const fighter = createCombatant('beep-boop', undefined, 'dragons_scale');
+      expect(combatSystem.getEffectiveArmor(fighter)).toBe(13);
     });
   });
 
@@ -191,6 +226,36 @@ describe('CombatSystem', () => {
 
       expect(attacker.currentHP).toBe(initialHP - 2);
     });
+
+    it('should trigger esmeralda mystic shield dodge', () => {
+      vi.spyOn(diceRoller, 'rollD20').mockReturnValue(20); // Hit
+      vi.spyOn(diceRoller, 'checkProc').mockReturnValue(true); // Dodge procs
+
+      const attacker = createCombatant('humphrey');
+      const esmeralda = createCombatant('esmeralda');
+      const initialHP = esmeralda.currentHP;
+
+      const event = combatSystem.executeAttack(attacker, esmeralda);
+
+      expect(event.hit).toBe(false);
+      expect(event.dodged).toBe(true);
+      expect(esmeralda.currentHP).toBe(initialHP); // No damage taken
+    });
+
+    it('should NOT dodge when proc fails for esmeralda', () => {
+      vi.spyOn(diceRoller, 'rollD20').mockReturnValue(20); // Hit
+      vi.spyOn(diceRoller, 'checkProc').mockReturnValue(false); // Dodge doesn't proc
+
+      const attacker = createCombatant('humphrey');
+      const esmeralda = createCombatant('esmeralda');
+      const initialHP = esmeralda.currentHP;
+
+      const event = combatSystem.executeAttack(attacker, esmeralda);
+
+      expect(event.hit).toBe(true);
+      expect(event.dodged).toBeUndefined();
+      expect(esmeralda.currentHP).toBeLessThan(initialHP);
+    });
   });
 
   describe('executeTurnEnd', () => {
@@ -214,6 +279,38 @@ describe('CombatSystem', () => {
       expect(event.regenHealing).toBe(1);
       expect(humphrey.currentHP).toBe(26);
     });
+
+    it('should apply moo-man milk power conditional regen when below 50% HP', () => {
+      // Moo-Man has Milk Power: regen 2 HP when below 50%
+      const mooMan = createCombatant('moo-man'); // HP 26
+      mooMan.currentHP = 10; // Below 50%
+
+      const event = combatSystem.executeTurnEnd(mooMan);
+
+      expect(event.regenHealing).toBe(2);
+      expect(mooMan.currentHP).toBe(12);
+    });
+
+    it('should NOT apply moo-man regen when at or above 50% HP', () => {
+      const mooMan = createCombatant('moo-man'); // HP 26
+      mooMan.currentHP = 20; // Above 50%
+
+      const event = combatSystem.executeTurnEnd(mooMan);
+
+      expect(event.regenHealing).toBe(0);
+      expect(mooMan.currentHP).toBe(20);
+    });
+
+    it('should apply murder bloodthirst conditional regen when below 50% HP', () => {
+      // Murder has Bloodthirst: regen 2 HP when below 50%
+      const murder = createCombatant('murder'); // HP 17
+      murder.currentHP = 5; // Below 50%
+
+      const event = combatSystem.executeTurnEnd(murder);
+
+      expect(event.regenHealing).toBe(2);
+      expect(murder.currentHP).toBe(7);
+    });
   });
 
   describe('isCombatantDead', () => {
@@ -226,6 +323,132 @@ describe('CombatSystem', () => {
     it('should return false when HP > 0', () => {
       const fighter = createCombatant('humphrey');
       expect(combatSystem.isCombatantDead(fighter)).toBe(false);
+    });
+  });
+});
+
+describe('CombatSystem with PassiveResolver', () => {
+  let diceRoller: DiceRoller;
+  let statusManager: StatusManager;
+  let passiveResolver: PassiveResolver;
+  let combatSystem: CombatSystem;
+
+  beforeEach(() => {
+    diceRoller = new DiceRoller();
+    statusManager = new StatusManager();
+    passiveResolver = new PassiveResolver(createDefaultRegistry());
+    combatSystem = new CombatSystem(diceRoller, statusManager, passiveResolver);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  describe('stat_flat passives via registry', () => {
+    it('should apply oswald keen eye armor via registry', () => {
+      const oswald = createCombatant('oswald');
+      expect(combatSystem.getEffectiveArmor(oswald)).toBe(10); // 8 base + 2 keen eye
+    });
+
+    it('should apply pang frost aura via registry', () => {
+      const pang = createCombatant('pang');
+      const enemy = createCombatant('beep-boop');
+      expect(combatSystem.getEffectiveAttackMod(enemy, pang)).toBe(2); // 3 - 1
+    });
+  });
+
+  describe('stat_conditional passives via registry', () => {
+    it('should apply sir-pokesalot armor bonus when below 50% HP', () => {
+      const sirPokesalot = createCombatant('sir-pokesalot');
+      expect(combatSystem.getEffectiveArmor(sirPokesalot)).toBe(13);
+      sirPokesalot.currentHP = 10;
+      expect(combatSystem.getEffectiveArmor(sirPokesalot)).toBe(15);
+    });
+
+    it('should apply wilber berserker rage attack bonus when below 50% HP', () => {
+      const wilber = createCombatant('wilber');
+      expect(combatSystem.getEffectiveAttackMod(wilber, null)).toBe(3);
+      wilber.currentHP = 10; // Below 50% of 22 (threshold is 11)
+      expect(combatSystem.getEffectiveAttackMod(wilber, null)).toBe(5); // 3 + 2
+    });
+  });
+
+  describe('on_attacked passives via registry', () => {
+    it('should apply beep-boop damage reduction via registry', () => {
+      const beepBoop = createCombatant('beep-boop');
+      expect(combatSystem.getDamageReduction(beepBoop)).toBe(1);
+    });
+
+    it('should apply sarah hard shell damage reduction via registry', () => {
+      const sarah = createCombatant('sarah');
+      expect(combatSystem.getDamageReduction(sarah)).toBe(1);
+    });
+
+    it('should trigger esmeralda dodge via registry', () => {
+      vi.spyOn(diceRoller, 'rollD20').mockReturnValue(20);
+      vi.spyOn(diceRoller, 'checkProc').mockReturnValue(true);
+
+      const attacker = createCombatant('humphrey');
+      const esmeralda = createCombatant('esmeralda');
+      const initialHP = esmeralda.currentHP;
+
+      const event = combatSystem.executeAttack(attacker, esmeralda);
+
+      expect(event.dodged).toBe(true);
+      expect(esmeralda.currentHP).toBe(initialHP);
+    });
+  });
+
+  describe('per_turn passives via registry', () => {
+    it('should apply humphrey thick skin regen via registry', () => {
+      const humphrey = createCombatant('humphrey');
+      humphrey.currentHP = 25;
+
+      const event = combatSystem.executeTurnEnd(humphrey);
+
+      expect(event.regenHealing).toBe(1);
+      expect(humphrey.currentHP).toBe(26);
+    });
+
+    it('should apply geezer wisdom of ages regen via registry', () => {
+      const geezer = createCombatant('geezer');
+      geezer.currentHP = 10;
+
+      const event = combatSystem.executeTurnEnd(geezer);
+
+      expect(event.regenHealing).toBe(2);
+      expect(geezer.currentHP).toBe(12);
+    });
+  });
+
+  describe('stat_conditional turn_end passives via registry', () => {
+    it('should apply moo-man milk power regen when below 50% via registry', () => {
+      const mooMan = createCombatant('moo-man');
+      mooMan.currentHP = 10;
+
+      const event = combatSystem.executeTurnEnd(mooMan);
+
+      expect(event.regenHealing).toBe(2);
+      expect(mooMan.currentHP).toBe(12);
+    });
+
+    it('should NOT apply moo-man regen when above 50%', () => {
+      const mooMan = createCombatant('moo-man');
+      mooMan.currentHP = 20;
+
+      const event = combatSystem.executeTurnEnd(mooMan);
+
+      expect(event.regenHealing).toBe(0);
+    });
+
+    it('should apply murder bloodthirst regen when below 50% via registry', () => {
+      const murder = createCombatant('murder');
+      murder.currentHP = 5;
+
+      const event = combatSystem.executeTurnEnd(murder);
+
+      expect(event.regenHealing).toBe(2);
+      expect(murder.currentHP).toBe(7);
     });
   });
 });

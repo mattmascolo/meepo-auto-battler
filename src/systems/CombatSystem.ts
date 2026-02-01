@@ -1,6 +1,7 @@
 import type { Combatant, StatusType } from '../types';
 import { DiceRoller } from './DiceRoller';
 import { StatusManager } from './StatusManager';
+import type { PassiveResolver } from './passives/PassiveResolver';
 
 export interface AttackEvent {
   type: 'attack';
@@ -31,7 +32,8 @@ export type CombatEvent = AttackEvent | TurnEndEvent;
 export class CombatSystem {
   constructor(
     private diceRoller: DiceRoller,
-    private statusManager: StatusManager
+    private statusManager: StatusManager,
+    private passiveResolver?: PassiveResolver
   ) {}
 
   getEffectiveAttackMod(combatant: Combatant, enemy: Combatant | null): number {
@@ -47,12 +49,18 @@ export class CombatSystem {
       mod += combatant.accessory.effect.attackMod;
     }
 
-    // Passive: Scrappy (Rat) - +2 when below 50% HP
-    if (combatant.animal.passive.type === 'stat_conditional' &&
-        combatant.animal.passive.trigger?.hpBelow) {
-      const threshold = combatant.maxHP * (combatant.animal.passive.trigger.hpBelow / 100);
-      if (combatant.currentHP < threshold) {
-        mod += combatant.animal.passive.effect.attackMod ?? 0;
+    // Passive stat mods (via registry or fallback)
+    if (this.passiveResolver) {
+      const passiveMods = this.passiveResolver.resolveStatMods(combatant, enemy);
+      mod += passiveMods.attackMod ?? 0;
+    } else {
+      // Legacy fallback: stat_conditional attackMod
+      if (combatant.animal.passive.type === 'stat_conditional' &&
+          combatant.animal.passive.trigger?.hpBelow) {
+        const threshold = combatant.maxHP * (combatant.animal.passive.trigger.hpBelow / 100);
+        if (combatant.currentHP < threshold) {
+          mod += combatant.animal.passive.effect.attackMod ?? 0;
+        }
       }
     }
 
@@ -68,9 +76,14 @@ export class CombatSystem {
     // Weaken status
     mod -= this.statusManager.getWeakenAmount(combatant.statuses);
 
-    // Enemy passive: Spider Web Trap - enemies have -1 Atk Mod
-    if (enemy?.animal.passive.effect.enemyAttackMod) {
-      mod += enemy.animal.passive.effect.enemyAttackMod;
+    // Enemy passive: enemyAttackMod debuff
+    if (enemy) {
+      if (this.passiveResolver) {
+        const enemyMods = this.passiveResolver.resolveStatMods(enemy, combatant);
+        mod += enemyMods.enemyAttackMod ?? 0;
+      } else if (enemy.animal.passive.effect.enemyAttackMod) {
+        mod += enemy.animal.passive.effect.enemyAttackMod;
+      }
     }
 
     return mod;
@@ -78,6 +91,28 @@ export class CombatSystem {
 
   getEffectiveArmor(combatant: Combatant): number {
     let armor = combatant.animal.stats.armor;
+
+    // Passive armor bonus (via registry or fallback)
+    if (this.passiveResolver) {
+      const passiveMods = this.passiveResolver.resolveStatMods(combatant, null);
+      armor += passiveMods.armor ?? 0;
+    } else {
+      // Legacy fallback: stat_flat armor
+      if (combatant.animal.passive.type === 'stat_flat' &&
+          combatant.animal.passive.effect.armor) {
+        armor += combatant.animal.passive.effect.armor;
+      }
+
+      // Legacy fallback: stat_conditional armor
+      if (combatant.animal.passive.type === 'stat_conditional' &&
+          combatant.animal.passive.trigger?.hpBelow &&
+          combatant.animal.passive.effect.armor) {
+        const threshold = combatant.maxHP * (combatant.animal.passive.trigger.hpBelow / 100);
+        if (combatant.currentHP < threshold) {
+          armor += combatant.animal.passive.effect.armor;
+        }
+      }
+    }
 
     // Accessory armor bonus (e.g., Dragon's Scale +2)
     if (combatant.accessory?.effect.armor) {
@@ -88,6 +123,12 @@ export class CombatSystem {
   }
 
   getDamageReduction(combatant: Combatant): number {
+    if (this.passiveResolver) {
+      const passiveMods = this.passiveResolver.resolveStatMods(combatant, null);
+      return passiveMods.damageReduction ?? 0;
+    }
+
+    // Legacy fallback
     if (combatant.animal.passive.effect.damageReduction) {
       return combatant.animal.passive.effect.damageReduction;
     }
@@ -156,8 +197,19 @@ export class CombatSystem {
       return event;
     }
 
-    // Check dodge (Mosquito Evasive passive)
-    if (defender.animal.passive.effect.dodgeChance) {
+    // Check dodge via registry or fallback
+    if (this.passiveResolver) {
+      const attackEffects = this.passiveResolver.resolveAttackEffects(
+        attacker,
+        defender,
+        this.getAttackDamage(attacker),
+        (chance) => this.diceRoller.checkProc(chance)
+      );
+      if (attackEffects.dodged) {
+        event.dodged = true;
+        return event;
+      }
+    } else if (defender.animal.passive.effect.dodgeChance) {
       if (this.diceRoller.checkProc(defender.animal.passive.effect.dodgeChance)) {
         event.dodged = true;
         return event;
@@ -214,14 +266,38 @@ export class CombatSystem {
     let regenHealing = 0;
     let dotDamage = 0;
 
-    // Apply Toad regen passive
-    if (combatant.animal.passive.type === 'per_turn' && combatant.animal.passive.effect.regen) {
-      const healAmount = Math.min(
-        combatant.animal.passive.effect.regen,
-        combatant.maxHP - combatant.currentHP
-      );
-      combatant.currentHP += healAmount;
-      regenHealing = healAmount;
+    // Apply passive regen (via registry or fallback)
+    if (this.passiveResolver) {
+      const turnEndEffects = this.passiveResolver.resolveTurnEndEffects(combatant);
+      if (turnEndEffects.regen !== undefined && turnEndEffects.regen > 0) {
+        combatant.currentHP += turnEndEffects.regen;
+        regenHealing = turnEndEffects.regen;
+      }
+    } else {
+      // Legacy fallback: per_turn regen
+      if (combatant.animal.passive.type === 'per_turn' && combatant.animal.passive.effect.regen) {
+        const healAmount = Math.min(
+          combatant.animal.passive.effect.regen,
+          combatant.maxHP - combatant.currentHP
+        );
+        combatant.currentHP += healAmount;
+        regenHealing = healAmount;
+      }
+
+      // Legacy fallback: stat_conditional regen
+      if (combatant.animal.passive.type === 'stat_conditional' &&
+          combatant.animal.passive.trigger?.hpBelow &&
+          combatant.animal.passive.effect.regen) {
+        const threshold = combatant.maxHP * (combatant.animal.passive.trigger.hpBelow / 100);
+        if (combatant.currentHP < threshold) {
+          const healAmount = Math.min(
+            combatant.animal.passive.effect.regen,
+            combatant.maxHP - combatant.currentHP
+          );
+          combatant.currentHP += healAmount;
+          regenHealing += healAmount;
+        }
+      }
     }
 
     // Apply regen status
