@@ -285,11 +285,48 @@ export const ANIMALS: Animal[] = [
       effect: { enemyAttackMod: -1 },
     },
   },
+  {
+    id: 'esmeralda',
+    name: 'Esmeralda',
+    stats: { hp: 19, attackMod: 4, armor: 10 },
+    unarmedAttack: {
+      name: 'Crystal Blast',
+      damage: 5,
+      effectChance: 25,
+      effectType: 'burn',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Mystic Shield',
+      description: '15% chance to dodge attacks',
+      type: 'on_attacked',
+      effect: { dodgeChance: 15 },
+    },
+  },
+  {
+    id: 'sir-pokesalot',
+    name: 'Sir Pokesalot',
+    stats: { hp: 21, attackMod: 3, armor: 13 },
+    unarmedAttack: {
+      name: 'Lance Thrust',
+      damage: 5,
+      effectChance: 20,
+      effectType: 'weaken',
+      effectValue: 2,
+    },
+    passive: {
+      name: 'Knight\'s Valor',
+      description: '+2 Armor when below 50% HP',
+      type: 'stat_conditional',
+      trigger: { hpBelow: 50 },
+      effect: { armor: 2 },
+    },
+  },
 ];
 
 // Enemy-only animals (not selectable by player)
-// Playable: pang, moo-man, oswald, finn, wyatt, quatack
-const ENEMY_ONLY_IDS = new Set(['beep-boop', 'stranger', 'wilber', 'geezer', 'sarah', 'humphrey', 'thomas', 'blackjack', 'murder', 'pooty']);
+// Playable: pang, moo-man, oswald, finn, wyatt, quatack, sir-pokesalot
+const ENEMY_ONLY_IDS = new Set(['beep-boop', 'stranger', 'wilber', 'geezer', 'sarah', 'humphrey', 'thomas', 'blackjack', 'murder', 'pooty', 'esmeralda']);
 
 // Playable animals for character selection
 export const PLAYABLE_ANIMALS: Animal[] = ANIMALS.filter(a => !ENEMY_ONLY_IDS.has(a.id));

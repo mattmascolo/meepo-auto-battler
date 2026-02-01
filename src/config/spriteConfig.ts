@@ -1033,6 +1033,132 @@ export const SPRITE_CONFIGS: Record<string, CharacterSpriteConfig> = {
       },
     },
   },
+  'esmeralda': {
+    basePath: 'characters/Esmeralda/processed',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'esmeralda-idle',
+        frames: [
+          'Idle/Idle_00.png',
+          'Idle/Idle_01.png',
+        ],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'esmeralda-attack',
+        frames: [
+          'Attack/Attack_00.png',
+          'Attack/Attack_01.png',
+          'Attack/Attack_02.png',
+          'Attack/Attack_03.png',
+          'Attack/Attack_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'esmeralda-hurt',
+        frames: [
+          'Hurt/Hurt_00.png',
+          'Hurt/Hurt_01.png',
+          'Hurt/Hurt_02.png',
+          'Hurt/Hurt_03.png',
+          'Hurt/Hurt_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'esmeralda-death',
+        frames: [
+          'Death/Death_00.png',
+          'Death/Death_01.png',
+          'Death/Death_02.png',
+          'Death/Death_03.png',
+          'Death/Death_04.png',
+        ],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'esmeralda-jump',
+        frames: [
+          'Jump/Jump_00.png',
+          'Jump/Jump_01.png',
+          'Jump/Jump_02.png',
+          'Jump/Jump_03.png',
+          'Jump/Jump_04.png',
+        ],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
+  'sir-pokesalot': {
+    basePath: 'characters/Sir-Pokesalot/processed',
+    frameSize: 128,
+    animations: {
+      idle: {
+        key: 'sir-pokesalot-idle',
+        frames: [
+          'Idle/Idle_00.png',
+          'Idle/Idle_01.png',
+        ],
+        frameRate: 4,
+        repeat: -1,
+      },
+      attack: {
+        key: 'sir-pokesalot-attack',
+        frames: [
+          'Attack/Attack_00.png',
+          'Attack/Attack_01.png',
+          'Attack/Attack_02.png',
+          'Attack/Attack_03.png',
+          'Attack/Attack_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      hurt: {
+        key: 'sir-pokesalot-hurt',
+        frames: [
+          'Hurt/Hurt_00.png',
+          'Hurt/Hurt_01.png',
+          'Hurt/Hurt_02.png',
+          'Hurt/Hurt_03.png',
+          'Hurt/Hurt_04.png',
+        ],
+        frameRate: 8,
+        repeat: 0,
+      },
+      death: {
+        key: 'sir-pokesalot-death',
+        frames: [
+          'Death/Death_00.png',
+          'Death/Death_01.png',
+          'Death/Death_02.png',
+          'Death/Death_03.png',
+          'Death/Death_04.png',
+        ],
+        frameRate: 4,
+        repeat: 0,
+      },
+      jump: {
+        key: 'sir-pokesalot-jump',
+        frames: [
+          'Jump/Jump_00.png',
+          'Jump/Jump_01.png',
+          'Jump/Jump_02.png',
+          'Jump/Jump_03.png',
+          'Jump/Jump_04.png',
+        ],
+        frameRate: 6,
+        repeat: 0,
+      },
+    },
+  },
 };
 
 /**
