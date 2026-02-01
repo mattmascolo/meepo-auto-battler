@@ -3,6 +3,7 @@ import type { Combatant } from '../types';
 import { gameStateManager } from '../GameStateManager';
 import { CombatSystem, DiceRoller, StatusManager, type CombatEvent } from '../systems';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { audioManager } from '../systems/AudioManager';
 
 const TURN_DELAY = 2000; // ms between turns (slower for readability)
 const DICE_ROLL_DURATION = 800; // ms for dice animation
@@ -198,6 +199,9 @@ export class BattleScene extends Phaser.Scene {
 
     // Dev controls (bottom of info panel)
     this.createDevControls(width);
+
+    // Add mute button
+    audioManager.createMuteButton(this);
 
     // Start combat loop
     this.time.delayedCall(TURN_DELAY, () => this.executeTurn());

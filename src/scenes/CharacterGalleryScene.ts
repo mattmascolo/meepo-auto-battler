@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { Animal } from '../types';
 import { ANIMALS, PLAYABLE_ANIMALS } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { audioManager } from '../systems/AudioManager';
 
 const CHARACTERS_PER_PAGE = 12;
 const GRID_COLS = 3;
@@ -43,6 +44,9 @@ export class CharacterGalleryScene extends Phaser.Scene {
     if (ANIMALS.length > 0) {
       this.selectCharacter(ANIMALS[0], 0);
     }
+
+    // Add mute button
+    audioManager.createMuteButton(this);
   }
 
   private get totalPages(): number {

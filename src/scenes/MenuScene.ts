@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { audioManager } from '../systems/AudioManager';
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -7,6 +8,12 @@ export class MenuScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.cameras.main;
+
+    // Initialize and start music
+    audioManager.initialize(this);
+
+    // Add mute button in bottom right
+    audioManager.createMuteButton(this);
 
     // Title
     this.add.text(width / 2, height / 3, 'Project Meepo', {

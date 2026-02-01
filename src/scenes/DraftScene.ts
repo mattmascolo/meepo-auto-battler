@@ -4,6 +4,7 @@ import { gameStateManager } from '../GameStateManager';
 import { isWeapon, DRAFT_WEAPONS, DRAFT_ACCESSORIES } from '../data/draftGear';
 import { WEAPONS, ACCESSORIES } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
+import { audioManager } from '../systems/AudioManager';
 
 interface StatChoice {
   type: 'heal' | 'maxHp' | 'attack' | 'armor';
@@ -143,6 +144,9 @@ export class DraftScene extends Phaser.Scene {
     });
 
     this.updateContinueButton();
+
+    // Add mute button
+    audioManager.createMuteButton(this);
   }
 
   private createFighterPreview(x: number, y: number, state: any): void {

@@ -22,6 +22,9 @@ export class PreloadScene extends Phaser.Scene {
     // Load battle backgrounds
     this.load.image('battle-bg-1', 'BattleMaps/battle-scene-1.png');
 
+    // Load music
+    this.load.audio('menu-music', 'music/Meepo-Menu-Chill.mp3');
+
     // Load static animal sprites (relative paths for GitHub Pages compatibility)
     this.load.image('rat', 'sprites/rat.png');
     this.load.image('toad', 'sprites/toad.png');
