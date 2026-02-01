@@ -91,11 +91,11 @@ export class CharacterGalleryScene extends Phaser.Scene {
       this.gridContainer.removeAll(true);
     }
 
-    const startX = 10;
+    const startX = 15;
     const startY = 75;
-    const cardWidth = 75;
-    const cardHeight = 95;
-    const spacing = 8;
+    const cardWidth = 110;
+    const cardHeight = 120;
+    const spacing = 10;
 
     // Section label
     const label = this.add.text(startX + 5, startY - 10, 'All Characters', {
@@ -136,26 +136,26 @@ export class CharacterGalleryScene extends Phaser.Scene {
         const config = SPRITE_CONFIGS[animal.id];
         const firstFramePath = config.animations.idle?.frames[0] || config.animations.attack?.frames[0];
         const firstFrameKey = `${animal.id}-${firstFramePath?.replace(/[\/\.]/g, '-')}`;
-        sprite = this.add.sprite(0, -15, firstFrameKey).setDisplaySize(48, 48);
+        sprite = this.add.sprite(0, -18, firstFrameKey).setDisplaySize(64, 64);
         if (config.animations.idle) {
           (sprite as Phaser.GameObjects.Sprite).play(config.animations.idle.key);
         }
       } else {
-        sprite = this.add.image(0, -15, animal.id).setDisplaySize(48, 48);
+        sprite = this.add.image(0, -18, animal.id).setDisplaySize(64, 64);
       }
 
       // Animal name
-      const name = this.add.text(0, 22, animal.name, {
+      const name = this.add.text(0, 30, animal.name, {
         fontFamily: FONT_FAMILY_SECONDARY,
-        fontSize: '11px',
+        fontSize: '13px',
         color: '#ffffff',
         fontStyle: 'bold',
       }).setOrigin(0.5);
 
       // Mini stats
-      const stats = this.add.text(0, 35, `HP:${animal.stats.hp}`, {
+      const stats = this.add.text(0, 48, `HP:${animal.stats.hp}`, {
         fontFamily: FONT_FAMILY_SECONDARY,
-        fontSize: '10px',
+        fontSize: '12px',
         color: '#aaaaaa',
       }).setOrigin(0.5);
 
