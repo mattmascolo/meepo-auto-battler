@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { FONT_FAMILY } from '../config/fontConfig';
+import { FONT_FAMILY, FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 export class ResultScene extends Phaser.Scene {
   constructor() {
@@ -57,7 +57,8 @@ export class ResultScene extends Phaser.Scene {
 
     // Champion label
     this.add.text(panelX, panelY - 140, 'CHAMPION', {
-      fontSize: '12px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '14px',
       color: '#ffdd44',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -71,6 +72,7 @@ export class ResultScene extends Phaser.Scene {
     // Animal name
     const animalName = state?.player.animal.name ?? 'Unknown';
     this.add.text(panelX, panelY + 10, animalName, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '24px',
       color: '#ffffff',
       fontStyle: 'bold',

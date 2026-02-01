@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { SPRITE_CONFIGS, getAllFrameKeys } from '../config/spriteConfig';
+import { FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 export class PreloadScene extends Phaser.Scene {
   constructor() {
@@ -10,7 +11,8 @@ export class PreloadScene extends Phaser.Scene {
     // Display loading text
     const { width, height } = this.cameras.main;
     const loadingText = this.add.text(width / 2, height / 2, 'Loading...', {
-      fontSize: '24px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '20px',
       color: '#ffffff',
     }).setOrigin(0.5);
 

@@ -3,7 +3,7 @@ import type { Animal } from '../types';
 import { PLAYABLE_ANIMALS } from '../data';
 import { gameStateManager } from '../GameStateManager';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { FONT_FAMILY } from '../config/fontConfig';
+import { FONT_FAMILY, FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 const CHARACTERS_PER_PAGE = 6;
 
@@ -99,6 +99,7 @@ export class LoadoutScene extends Phaser.Scene {
 
     // Previous button
     this.prevButton = this.add.text(centerX - 80, y, '◀', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '24px',
       color: '#666666',
     })
@@ -114,12 +115,14 @@ export class LoadoutScene extends Phaser.Scene {
 
     // Page indicator
     this.pageText = this.add.text(centerX, y, '', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '16px',
       color: '#888888',
     }).setOrigin(0.5);
 
     // Next button
     this.nextButton = this.add.text(centerX + 80, y, '▶', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '24px',
       color: '#666666',
     })

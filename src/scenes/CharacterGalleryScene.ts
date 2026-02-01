@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import type { Animal } from '../types';
 import { ANIMALS, PLAYABLE_ANIMALS } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { FONT_FAMILY } from '../config/fontConfig';
+import { FONT_FAMILY, FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 const CHARACTERS_PER_PAGE = 12;
 const GRID_COLS = 3;
@@ -99,7 +99,8 @@ export class CharacterGalleryScene extends Phaser.Scene {
 
     // Section label
     const label = this.add.text(startX + 5, startY - 10, 'All Characters', {
-      fontSize: '11px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#888888',
     });
     this.gridContainer?.add(label);
@@ -145,14 +146,16 @@ export class CharacterGalleryScene extends Phaser.Scene {
 
       // Animal name
       const name = this.add.text(0, 22, animal.name, {
-        fontSize: '10px',
+        fontFamily: FONT_FAMILY_SECONDARY,
+        fontSize: '11px',
         color: '#ffffff',
         fontStyle: 'bold',
       }).setOrigin(0.5);
 
       // Mini stats
       const stats = this.add.text(0, 35, `HP:${animal.stats.hp}`, {
-        fontSize: '8px',
+        fontFamily: FONT_FAMILY_SECONDARY,
+        fontSize: '10px',
         color: '#aaaaaa',
       }).setOrigin(0.5);
 

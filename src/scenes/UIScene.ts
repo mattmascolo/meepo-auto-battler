@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { audioManager } from '../systems/AudioManager';
+import { FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 const SCALE_KEY = 'meepo-scale-mode';
 
@@ -28,6 +29,7 @@ export class UIScene extends Phaser.Scene {
 
     // Scale button in top right
     this.scaleButton = this.add.text(width - 45, 12, this.scaleModes[this.currentScaleMode].label, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '14px',
       color: '#888888',
       backgroundColor: '#222233',

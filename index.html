@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
     <title>Project Meepo - Auto Battler</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,18 +25,20 @@
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
       }
-      /* Hidden element to force font loading */
+      /* Hidden elements to force font loading */
       .font-preload {
-        font-family: 'Press Start 2P', monospace;
         position: absolute;
         left: -9999px;
         visibility: hidden;
       }
+      .font-preload-primary { font-family: 'Press Start 2P', monospace; }
+      .font-preload-secondary { font-family: 'Silkscreen', monospace; }
     </style>
   </head>
   <body>
-    <!-- Force browser to load the font before Phaser renders -->
-    <span class="font-preload">Loading...</span>
+    <!-- Force browser to load fonts before Phaser renders -->
+    <span class="font-preload font-preload-primary">Loading...</span>
+    <span class="font-preload font-preload-secondary">Loading...</span>
     <div id="game-container"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

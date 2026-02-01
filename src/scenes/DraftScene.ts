@@ -4,7 +4,7 @@ import { gameStateManager } from '../GameStateManager';
 import { isWeapon, DRAFT_WEAPONS, DRAFT_ACCESSORIES } from '../data/draftGear';
 import { WEAPONS, ACCESSORIES } from '../data';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { FONT_FAMILY } from '../config/fontConfig';
+import { FONT_FAMILY, FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 interface StatChoice {
   type: 'heal' | 'maxHp' | 'attack' | 'armor';
@@ -102,12 +102,14 @@ export class DraftScene extends Phaser.Scene {
     const hpColor = hpPercent > 50 ? '#88ff88' : hpPercent > 25 ? '#ffff88' : '#ff8888';
 
     this.add.text(selectionX + 250, 55, `Current HP: ${state.player.currentHP} / ${state.player.maxHP}`, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '16px',
       color: hpColor,
     }).setOrigin(0.5);
 
     // Stat section
     this.add.text(selectionX, 85, '1. Choose a Bonus', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '16px',
       color: '#ffff88',
     });
@@ -116,6 +118,7 @@ export class DraftScene extends Phaser.Scene {
 
     // Gear section
     this.add.text(selectionX, 240, '2. Choose New Gear', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '16px',
       color: '#ffaa44',
     });
@@ -164,6 +167,7 @@ export class DraftScene extends Phaser.Scene {
 
     // Title
     const title = this.add.text(0, 15, 'Your Fighter', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '14px',
       color: '#888888',
     }).setOrigin(0.5);
@@ -188,6 +192,7 @@ export class DraftScene extends Phaser.Scene {
 
     // Animal name
     const name = this.add.text(0, 120, state.player.animal.name, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '16px',
       color: '#ffffff',
       fontStyle: 'bold',
@@ -199,16 +204,19 @@ export class DraftScene extends Phaser.Scene {
     const statsContainer = this.add.container(0, yPos);
 
     this.previewHpText = this.add.text(-50, 0, `❤️ ${state.player.currentHP}/${state.player.maxHP}`, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '11px',
       color: '#ff6666',
     }).setOrigin(0.5);
 
     this.previewAtkText = this.add.text(25, 0, `⚔️ +${state.player.animal.stats.attackMod}`, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '11px',
       color: '#ffaa66',
     }).setOrigin(0.5);
 
     this.previewArmorText = this.add.text(70, 0, `🛡️ ${state.player.animal.stats.armor}`, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '11px',
       color: '#6699ff',
     }).setOrigin(0.5);
@@ -224,7 +232,8 @@ export class DraftScene extends Phaser.Scene {
 
     // Attack section
     const attackLabel = this.add.text(0, yPos, 'ATTACK', {
-      fontSize: '9px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#ffcc66',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -233,7 +242,8 @@ export class DraftScene extends Phaser.Scene {
 
     const unarmedAttack = state.player.animal.unarmedAttack;
     const attackName = this.add.text(0, yPos, `👊 ${unarmedAttack.name}`, {
-      fontSize: '11px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#ffffff',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -245,7 +255,8 @@ export class DraftScene extends Phaser.Scene {
       attackDetails += ` • ${unarmedAttack.effectChance}% ${unarmedAttack.effectType}`;
     }
     const attackDesc = this.add.text(0, yPos, attackDetails, {
-      fontSize: '9px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#aaaaaa',
     }).setOrigin(0.5);
     container.add(attackDesc);
@@ -258,7 +269,8 @@ export class DraftScene extends Phaser.Scene {
 
     // Equipment section
     const equipLabel = this.add.text(0, yPos, 'EQUIPMENT', {
-      fontSize: '9px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#8888aa',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -292,7 +304,8 @@ export class DraftScene extends Phaser.Scene {
 
     // Passive section
     const passiveLabel = this.add.text(0, yPos, 'PASSIVE', {
-      fontSize: '9px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#88ff88',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -300,7 +313,8 @@ export class DraftScene extends Phaser.Scene {
     yPos += 14;
 
     const passiveName = this.add.text(0, yPos, state.player.animal.passive.name, {
-      fontSize: '11px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#ffffff',
       fontStyle: 'bold',
     }).setOrigin(0.5);
@@ -308,7 +322,8 @@ export class DraftScene extends Phaser.Scene {
     yPos += 14;
 
     const passiveDesc = this.add.text(0, yPos, state.player.animal.passive.description, {
-      fontSize: '9px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#aaaaaa',
       align: 'center',
       wordWrap: { width: panelWidth - 20 },
@@ -333,14 +348,16 @@ export class DraftScene extends Phaser.Scene {
 
     // Icon on the left
     const iconText = this.add.text(x - width / 2 + 14, y, icon, {
-      fontSize: '11px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
     }).setOrigin(0.5);
     container.add(iconText);
 
     // Item name or "Empty" indicator
     const displayText = itemName || 'Empty';
     const label = this.add.text(x + 8, y, displayText, {
-      fontSize: '10px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '11px',
       color: textColor,
       fontStyle: itemName ? 'bold' : 'normal',
     }).setOrigin(0.5);
@@ -572,17 +589,20 @@ export class DraftScene extends Phaser.Scene {
         .setStrokeStyle(2, choice.color);
 
       const icon = this.add.text(0, -30, choice.icon, {
+        fontFamily: FONT_FAMILY_SECONDARY,
         fontSize: '32px',
       }).setOrigin(0.5);
 
       const label = this.add.text(0, 15, choice.label, {
+        fontFamily: FONT_FAMILY_SECONDARY,
         fontSize: '20px',
         color: '#ffffff',
         fontStyle: 'bold',
       }).setOrigin(0.5);
 
       const desc = this.add.text(0, 40, choice.description, {
-        fontSize: '11px',
+        fontFamily: FONT_FAMILY_SECONDARY,
+        fontSize: '12px',
         color: '#aaaaaa',
       }).setOrigin(0.5);
 
@@ -628,22 +648,26 @@ export class DraftScene extends Phaser.Scene {
           .setStrokeStyle(2, 0x8888aa);
 
         const typeLabel = this.add.text(0, -70, 'KEEP CURRENT', {
-          fontSize: '10px',
+          fontFamily: FONT_FAMILY_SECONDARY,
+          fontSize: '11px',
           color: '#8888aa',
         }).setOrigin(0.5);
 
         const emojiText = this.add.text(0, -30, '✓', {
+          fontFamily: FONT_FAMILY_SECONDARY,
           fontSize: '36px',
         }).setOrigin(0.5);
 
         const nameLabel = this.add.text(0, 10, 'No Change', {
+          fontFamily: FONT_FAMILY_SECONDARY,
           fontSize: '14px',
           color: '#ffffff',
           fontStyle: 'bold',
         }).setOrigin(0.5);
 
         const descLabel = this.add.text(0, 55, 'Continue with\nyour current gear', {
-          fontSize: '10px',
+          fontFamily: FONT_FAMILY_SECONDARY,
+          fontSize: '11px',
           color: '#aaaaaa',
           wordWrap: { width: cardWidth - 20 },
           align: 'center',
@@ -681,7 +705,8 @@ export class DraftScene extends Phaser.Scene {
       // Rarity badge
       if (choice.isRare) {
         const badge = this.add.text(0, -75, '✨ RARE ✨', {
-          fontSize: '10px',
+          fontFamily: FONT_FAMILY_SECONDARY,
+          fontSize: '11px',
           color: '#ffaa00',
           fontStyle: 'bold',
         }).setOrigin(0.5);
@@ -691,7 +716,8 @@ export class DraftScene extends Phaser.Scene {
       // Type label
       const typeColor = choice.type === 'weapon' ? '#ff9966' : '#66ff99';
       const typeLabel = this.add.text(0, choice.isRare ? -58 : -70, choice.type.toUpperCase(), {
-        fontSize: '10px',
+        fontFamily: FONT_FAMILY_SECONDARY,
+        fontSize: '11px',
         color: typeColor,
       }).setOrigin(0.5);
 
@@ -700,11 +726,13 @@ export class DraftScene extends Phaser.Scene {
         ? this.getWeaponEmoji(choice.item!.id)
         : this.getAccessoryEmoji(choice.item!.id);
       const emojiText = this.add.text(0, -30, emoji, {
+        fontFamily: FONT_FAMILY_SECONDARY,
         fontSize: '36px',
       }).setOrigin(0.5);
 
       // Name
       const nameLabel = this.add.text(0, 10, choice.item!.name, {
+        fontFamily: FONT_FAMILY_SECONDARY,
         fontSize: '14px',
         color: '#ffffff',
         fontStyle: 'bold',
@@ -713,7 +741,8 @@ export class DraftScene extends Phaser.Scene {
       // Description
       const descText = this.getGearDescription(choice);
       const descLabel = this.add.text(0, 55, descText, {
-        fontSize: '10px',
+        fontFamily: FONT_FAMILY_SECONDARY,
+        fontSize: '11px',
         color: '#aaaaaa',
         wordWrap: { width: cardWidth - 20 },
         align: 'center',

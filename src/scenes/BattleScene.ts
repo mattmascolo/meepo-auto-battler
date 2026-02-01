@@ -3,7 +3,7 @@ import type { Combatant } from '../types';
 import { gameStateManager } from '../GameStateManager';
 import { CombatSystem, DiceRoller, StatusManager, type CombatEvent } from '../systems';
 import { hasAnimatedSprite, SPRITE_CONFIGS } from '../config/spriteConfig';
-import { FONT_FAMILY } from '../config/fontConfig';
+import { FONT_FAMILY, FONT_FAMILY_SECONDARY } from '../config/fontConfig';
 
 const TURN_DELAY = 2000; // ms between turns (slower for readability)
 const DICE_ROLL_DURATION = 800; // ms for dice animation
@@ -112,24 +112,26 @@ export class BattleScene extends Phaser.Scene {
 
     // Player name under sprite
     this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 15, this.getDisplayName(this.player), {
-      fontSize: '16px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '14px',
       color: '#ffffff',
-      fontStyle: 'bold',
       stroke: '#000000',
       strokeThickness: 2,
     }).setOrigin(0.5);
 
     // Player HP
-    this.playerHPText = this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 38, this.getHPDisplay(this.player), {
-      fontSize: '16px',
+    this.playerHPText = this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 35, this.getHPDisplay(this.player), {
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#88ff88',
       stroke: '#000000',
       strokeThickness: 2,
     }).setOrigin(0.5);
 
     // Player status effects
-    this.playerStatusText = this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 58, '', {
-      fontSize: '12px',
+    this.playerStatusText = this.add.text(PLAYER_X, SPRITE_Y + SPRITE_SIZE / 2 + 52, '', {
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#ffaa00',
       stroke: '#000000',
       strokeThickness: 1,
@@ -141,24 +143,26 @@ export class BattleScene extends Phaser.Scene {
 
     // CPU name under sprite
     this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 15, this.getDisplayName(this.cpu), {
-      fontSize: '16px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '14px',
       color: '#ffffff',
-      fontStyle: 'bold',
       stroke: '#000000',
       strokeThickness: 2,
     }).setOrigin(0.5);
 
     // CPU HP
-    this.cpuHPText = this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 38, this.getHPDisplay(this.cpu), {
-      fontSize: '16px',
+    this.cpuHPText = this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 35, this.getHPDisplay(this.cpu), {
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#ff8888',
       stroke: '#000000',
       strokeThickness: 2,
     }).setOrigin(0.5);
 
     // CPU status effects
-    this.cpuStatusText = this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 58, '', {
-      fontSize: '12px',
+    this.cpuStatusText = this.add.text(CPU_X, SPRITE_Y + SPRITE_SIZE / 2 + 52, '', {
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#ffaa00',
       stroke: '#000000',
       strokeThickness: 1,
@@ -184,12 +188,14 @@ export class BattleScene extends Phaser.Scene {
 
     // Battle log (center)
     this.add.text(width / 2, INFO_PANEL_Y + 15, 'Battle Log', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '14px',
       color: '#aaaaaa',
     }).setOrigin(0.5);
 
-    this.logToggleBtn = this.add.text(width / 2 + 55, INFO_PANEL_Y + 15, '[show]', {
-      fontSize: '11px',
+    this.logToggleBtn = this.add.text(width / 2 + 60, INFO_PANEL_Y + 15, '[show]', {
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#666666',
     }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
 
@@ -198,11 +204,12 @@ export class BattleScene extends Phaser.Scene {
     this.logToggleBtn.on('pointerout', () => this.logToggleBtn?.setColor('#666666'));
 
     this.logText = this.add.text(width / 2, INFO_PANEL_Y + 35, '', {
-      fontSize: '12px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '11px',
       color: '#ffffff',
       wordWrap: { width: 320 },
       align: 'center',
-      lineSpacing: 2,
+      lineSpacing: 4,
     }).setOrigin(0.5, 0).setVisible(false);
 
     // Determine first turn
@@ -218,11 +225,12 @@ export class BattleScene extends Phaser.Scene {
 
   private createDevControls(width: number): void {
     const y = INFO_PANEL_Y + 200; // Near bottom of info panel
-    const btnStyle = { fontSize: '11px', color: '#ffffff', backgroundColor: '#333355', padding: { x: 6, y: 3 } };
+    const btnStyle = { fontFamily: FONT_FAMILY_SECONDARY, fontSize: '12px', color: '#ffffff', backgroundColor: '#333355', padding: { x: 6, y: 3 } };
 
     // Toggle button (always visible)
     this.devToggleBtn = this.add.text(width / 2, y - 15, '[dev]', {
-      fontSize: '9px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '10px',
       color: '#444444',
     }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
@@ -346,12 +354,14 @@ export class BattleScene extends Phaser.Scene {
 
     // "d20" label
     const d20Label = this.add.text(0, -55, 'd20', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '14px',
       color: '#888888',
     }).setOrigin(0.5);
 
     // Dice number
     this.diceText = this.add.text(0, 0, '--', {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '36px',
       color: '#ffffff',
       fontStyle: 'bold',
@@ -424,14 +434,16 @@ export class BattleScene extends Phaser.Scene {
 
     // Panel header
     this.add.text(x, y, headerText, {
-      fontSize: '12px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '14px',
       color: headerColor,
       fontStyle: 'bold',
     }).setOrigin(0.5);
 
     // Stats line
     this.add.text(x, y + 22, `⚔️ +${attackMod}  🛡️ ${armor}  💥 ${damage}`, {
-      fontSize: '13px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '14px',
       color: '#ffffff',
     }).setOrigin(0.5);
 
@@ -442,7 +454,8 @@ export class BattleScene extends Phaser.Scene {
       attackDesc += ` ${unarmedAttack.effectChance}% ${unarmedAttack.effectType}`;
     }
     this.add.text(x, y + 44, attackDesc, {
-      fontSize: '11px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '12px',
       color: '#ffcc66',
     }).setOrigin(0.5);
 
@@ -472,7 +485,8 @@ export class BattleScene extends Phaser.Scene {
 
     // Passive ability
     this.add.text(x, y + 135, `Passive: ${combatant.animal.passive.name}`, {
-      fontSize: '10px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '11px',
       color: '#888888',
     }).setOrigin(0.5);
   }
@@ -492,13 +506,15 @@ export class BattleScene extends Phaser.Scene {
 
     // Icon on the left
     this.add.text(x - width / 2 + 14, y, icon, {
+      fontFamily: FONT_FAMILY_SECONDARY,
       fontSize: '12px',
     }).setOrigin(0.5);
 
     // Item name or "Empty" indicator
     const displayText = itemName || 'Empty';
     this.add.text(x + 8, y, displayText, {
-      fontSize: '10px',
+      fontFamily: FONT_FAMILY_SECONDARY,
+      fontSize: '11px',
       color: textColor,
       fontStyle: itemName ? 'bold' : 'normal',
     }).setOrigin(0.5);
