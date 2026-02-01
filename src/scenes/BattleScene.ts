@@ -36,7 +36,7 @@ export class BattleScene extends Phaser.Scene {
   private logText: Phaser.GameObjects.Text | null = null;
   private logToggleBtn: Phaser.GameObjects.Text | null = null;
   private battleLog: string[] = [];
-  private logVisible: boolean = true;
+  private logVisible: boolean = false;
 
   // Dice display
   private diceText: Phaser.GameObjects.Text | null = null;
@@ -65,7 +65,7 @@ export class BattleScene extends Phaser.Scene {
     // Reset battle state
     this.battleLog = [];
     this.battleEnded = false;
-    this.logVisible = true;
+    this.logVisible = false;
     this.cpuNumber = state.run.currentCPU;
 
     // Get combatants
@@ -175,7 +175,7 @@ export class BattleScene extends Phaser.Scene {
       color: '#aaaaaa',
     }).setOrigin(0.5);
 
-    this.logToggleBtn = this.add.text(width / 2 + 55, INFO_PANEL_Y + 15, '[hide]', {
+    this.logToggleBtn = this.add.text(width / 2 + 55, INFO_PANEL_Y + 15, '[show]', {
       fontSize: '11px',
       color: '#666666',
     }).setOrigin(0, 0.5).setInteractive({ useHandCursor: true });
@@ -190,7 +190,7 @@ export class BattleScene extends Phaser.Scene {
       wordWrap: { width: 320 },
       align: 'center',
       lineSpacing: 2,
-    }).setOrigin(0.5, 0);
+    }).setOrigin(0.5, 0).setVisible(false);
 
     // Determine first turn
     this.isPlayerTurn = this.diceRoller.coinFlip();
